@@ -14,4 +14,5 @@ include_directories(
     third-party
 )
 
+add_subdirectory(cli)
 add_subdirectory(test)

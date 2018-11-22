@@ -1,6 +1,6 @@
 /**
  * \file main.cpp
- * Entry point for the test executable
+ * Entry point for the qSim test executable
  * 
  * \author Igor Siemienowicz
  * 

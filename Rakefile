@@ -39,3 +39,12 @@ end
 ###task :docs => "build/docs" do
 ###    sh "doxygen"
 ###end
+
+namespace :run do
+    
+    desc "run the qSim CLI"
+    task :cli => :bin do
+        sh "build/cli/qsim-cli"
+    end
+    
+end # run namespace
