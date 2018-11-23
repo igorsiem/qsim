@@ -33,12 +33,12 @@ task :test => :bin do
     sh "build/test/test-qsim"
 end
 
-###directory "build/docs"
-###
-###desc "build doxygen docs"
-###task :docs => "build/docs" do
-###    sh "doxygen"
-###end
+directory "build/docs"
+
+desc "build doxygen docs"
+task :docs => "build/docs" do
+    sh "doxygen"
+end
 
 namespace :run do
     
