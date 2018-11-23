@@ -1,0 +1,3 @@
+[submodule "src/external/qlib"]
+	path = src/external/qlib
+	url = git@github.com:igorsiem/qlib.git

@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
     .
+    external
+    external/qlib/third-party/fmt/include
     third-party
 )
 
