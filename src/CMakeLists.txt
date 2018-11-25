@@ -18,3 +18,4 @@ include_directories(
 
 add_subdirectory(cli)
 add_subdirectory(test)
+add_subdirectory(external/qlib/third-party/fmt EXCLUDE_FROM_ALL)

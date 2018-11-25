@@ -14,7 +14,7 @@
 
 // Verify the operation of the error class declaration macros
 DECLARE_ERROR_CLASS(test_error1, std::runtime_error)
-DECLARE_MESSAGE_ERROR_CLASS( test_error2, std::exception, "second error")
+DECLARE_MESSAGE_ERROR_CLASS(test_error2, std::exception, "second error")
 
 TEST_CASE("error", "[unit]")
 {
@@ -36,7 +36,7 @@ TEST_CASE("error", "[unit]")
 
     try
     {
-        throw test_error2();
+        RAISE_ERROR_WITH_DEBUG_MESSAGE(test_error2, "test debug message");
 
         FAIL("exception was not thrown as expected");
     }

@@ -52,4 +52,58 @@ class cname : public base_cname \
         { return msg; } \
 };
 
+/**
+ * \brief Throw an instance of a named exception class, writing a message
+ * to the debug log at the same time
+ * 
+ * Note that the debug message is not the `what` message of the error type
+ * itself. This would normally be logged separately at the catch point,
+ * unless it can be resolved.
+ * 
+ * The underlying usage pattern here is that the error type is propagated
+ * to the point where it can be either resolved or signalled to the user,
+ * while the debug message contains programmer information (debug logging
+ * may or may not be turned on).
+ * 
+ * \param error_type The type of error object to throw as an exception; this
+ * should be default-constructible
+ * 
+ * \param debug_msg The message to write to the log; this should be a
+ * standard string
+ */
+#define RAISE_ERROR_WITH_DEBUG_MESSAGE(error_type, debug_msg) \
+    do { \
+        ::qlib::logger::instance().log( \
+            ::qlib::logger::level_t::debug \
+            , std::string(debug_msg)); \
+        throw error_type(); \
+    } while (false)
+
+/**
+ * \brief Throw an instance of a named exception class, writing a (wide
+ * string) message to the debug log at the same time
+ * 
+ * Note that the debug message is not the `what` message of the error type
+ * itself. This would normally be logged separately at the catch point,
+ * unless it can be resolved.
+ * 
+ * The underlying usage pattern here is that the error type is propagated
+ * to the point where it can be either resolved or signalled to the user,
+ * while the debug message contains programmer information (debug logging
+ * may or may not be turned on).
+ * 
+ * \param error_type The type of error object to throw as an exception; this
+ * should be default-constructible
+ * 
+ * \param debug_wmsg The message to write to the log; this should be a
+ * wide string
+ */
+#define RAISE_ERROR_WITH_DEBUG_WMESSAGE(error_type, debug_wmsg) \
+    do { \
+        ::qlib::logger::instance().log( \
+            ::qlib::logger::level_t::debug \
+            , std::wstring(debug_wmsg)); \
+        throw error_type(); \
+    } while (false)
+
 #endif
