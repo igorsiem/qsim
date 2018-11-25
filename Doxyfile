@@ -864,7 +864,8 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = src/test \
-                         src/third-party
+                         src/third-party \
+                         src/external
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

@@ -11,8 +11,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
     .
+    external
+    external/qlib/third-party/fmt/include
     third-party
 )
 
 add_subdirectory(cli)
 add_subdirectory(test)
+add_subdirectory(external/qlib/third-party/fmt EXCLUDE_FROM_ALL)

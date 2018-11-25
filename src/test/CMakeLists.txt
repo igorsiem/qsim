@@ -7,3 +7,4 @@
 
 file (GLOB TEST_SRC *.cpp)
 add_executable(test-qsim ${TEST_SRC})
+target_link_libraries(test-qsim PRIVATE fmt-header-only)
