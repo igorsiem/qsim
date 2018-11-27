@@ -10,7 +10,7 @@
  */
 
 #include <catch/catch.hpp>
-#include "../lib/qsim.h"
+#include <qsim/qsim.h>
 
 // Verify the operation of the error class declaration macros
 DECLARE_ERROR_CLASS(test_error1, std::runtime_error)

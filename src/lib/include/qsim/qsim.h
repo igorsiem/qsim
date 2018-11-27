@@ -10,3 +10,7 @@
  */
 
 #include "error.h"
+#include "id.h"
+#include "model.h"
+#include "qsim_concepts.h"
+#include "qsim_pointers.h"
