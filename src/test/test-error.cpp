@@ -16,7 +16,8 @@
 DECLARE_ERROR_CLASS(test_error1, std::runtime_error)
 DECLARE_MESSAGE_ERROR_CLASS(test_error2, std::exception, "second error")
 
-TEST_CASE("error", "[unit]")
+// Basic verification of error signalling and handling
+TEST_CASE("error", "[unit][error]")
 {
 
     try

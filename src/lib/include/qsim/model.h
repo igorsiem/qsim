@@ -100,6 +100,8 @@ concept bool IsModel()
  * common base class.
  *
  * \tparam ModelT The Model type
+ *
+ * \todo Methods for setting and deleting model instances
  */
 template <QSIM_CONCEPT(IsModel, ModelT)>
 class model_instance_wrapper : public model_wrapper
@@ -154,6 +156,22 @@ class model_instance_wrapper : public model_wrapper
      * \throw std::bad_optional_access There is no wrapped model object
      */
     const model_t& model(void) const { return m_model_instance.value(); }
+
+    /**
+     * \brief The type ID of the underlying model
+     *
+     * \throw std::bad_optional_access There is no wrapped model object
+     */
+    virtual model_type_id_t model_type_id(void) const override
+        { return model().model_type_id(); }
+
+    /**
+     * \brief The instance ID of the underlying model
+     *
+     * \throw std::bad_optional_access There is no wrapped model object
+     */
+    virtual model_instance_id_t model_instance_id(void) const override
+        { return model().model_instance_id(); }
 
     protected:
 

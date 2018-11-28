@@ -5,6 +5,9 @@
 # accompanying file LICENSE_1_0.txt or copy at
 # https://www.boost.org/LICENSE_1_0.txt)
 
+file (GLOB TEST_MODELS_SRC test-models/*.cpp)
+add_library(test-models ${TEST_MODELS_SRC})
+
 file (GLOB TEST_SRC *.cpp)
 add_executable(test-qsim ${TEST_SRC})
-target_link_libraries(test-qsim PRIVATE fmt-header-only)
+target_link_libraries(test-qsim fmt-header-only test-models)

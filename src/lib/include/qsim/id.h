@@ -9,6 +9,9 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
+#ifndef _qsim_id_h_included
+#define _qsim_id_h_included
+
 /**
  * \brief Declarations related to *qSim*
  */
@@ -55,3 +58,5 @@ using model_instance_id_t = id_t;
 constexpr id_t undefined_model_instance_id = 0;
 
 }   // end qsim namespace
+
+#endif
