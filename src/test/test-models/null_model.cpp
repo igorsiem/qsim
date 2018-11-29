@@ -14,6 +14,9 @@
 
 namespace test_models {
 
-null_model::null_model(qsim::model_instance_id_t iid) : m_instance_id(iid) {}
+null_model::null_model(qsim::model_instance_id_t iid) :
+    m_instance_id(iid)
+    , m_model_state(qsim::model_state_t::none)
+{}
 
 }   // end test_models namespace

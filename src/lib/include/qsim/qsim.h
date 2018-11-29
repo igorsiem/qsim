@@ -12,5 +12,6 @@
 #include "error.h"
 #include "id.h"
 #include "model.h"
+#include "model_state.h"
 #include "qsim_concepts.h"
 #include "qsim_pointers.h"

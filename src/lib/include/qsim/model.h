@@ -12,6 +12,7 @@
 #include <optional>
 #include <qlib/qlib.h>
 
+#include "model_state.h"
 #include "qsim_concepts.h"
 #include "qsim_pointers.h"
 
@@ -36,13 +37,24 @@ class model_wrapper
 
     /**
      * \brief The type ID of the underlying model
+     *
+     * \return The type ID
      */
     virtual model_type_id_t model_type_id(void) const = 0;
 
     /**
      * \brief The instance ID of the underlying model
+     *
+     * \return The instance ID
      */
     virtual model_instance_id_t model_instance_id(void) const = 0;
+
+    /**
+     * \brief Retrieve the state of the underlying model
+     *
+     * \return The model state enumerator
+     */
+    virtual model_state_t model_state(void) const = 0;
 
 };  // end class model_wrapper
 
@@ -79,6 +91,20 @@ concept bool HasModelInstanceId()
 }
 
 /**
+ * \brief Concept requiring a type to have a model state retrieval method
+ *
+ * \tparam T The constrained type
+ */
+template <typename T>
+concept bool HasModelState()
+{
+    return requires(T t)
+    {
+        { t.model_state() } -> model_state_t;
+    };
+}
+
+/**
  * \brief Constraints on a type so that it is usable as a Model class
  *
  * \tparam T The constrainted model type
@@ -86,8 +112,11 @@ concept bool HasModelInstanceId()
 template <typename T>
 concept bool IsModel()
 {
-    return HasModelTypeId<T>() && HasModelInstanceId<T>();
-}
+    return
+        HasModelTypeId<T>()
+        && HasModelInstanceId<T>()
+        && HasModelState<T>();
+}   // end IsModel concet
 
 #endif  // QSIM_USE_CONCEPTS
 
@@ -160,6 +189,8 @@ class model_instance_wrapper : public model_wrapper
     /**
      * \brief The type ID of the underlying model
      *
+     * \return The ID of the model type
+     *
      * \throw std::bad_optional_access There is no wrapped model object
      */
     virtual model_type_id_t model_type_id(void) const override
@@ -168,10 +199,22 @@ class model_instance_wrapper : public model_wrapper
     /**
      * \brief The instance ID of the underlying model
      *
+     * \return The ID of the model instance
+     *
      * \throw std::bad_optional_access There is no wrapped model object
      */
     virtual model_instance_id_t model_instance_id(void) const override
         { return model().model_instance_id(); }
+
+    /**
+     * \brief Retrieve the state of the underlying model
+     *
+     * \return The model state enumerator
+     *
+     * \throw std::bad_optional_access There is no wrapped model object
+     */
+    virtual model_state_t model_state(void) const override
+        { return model().model_state(); }
 
     protected:
 

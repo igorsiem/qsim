@@ -18,6 +18,7 @@
 
 namespace test_models {
 
+// Example of model class that does absolutely nothing
 class null_model
 {
 
@@ -29,9 +30,15 @@ class null_model
     qsim::model_instance_id_t model_instance_id(void) const
         { return m_instance_id; }
 
+    qsim::model_state_t model_state(void) const { return m_model_state; }
+
+    void set_model_state(qsim::model_state_t ms) { m_model_state = ms; }
+
     protected:
 
     qsim::model_instance_id_t m_instance_id;
+
+    qsim::model_state_t m_model_state;
 
 };  // end null_model class
 
