@@ -10,6 +10,7 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
+#include <string>
 #include <qsim/qsim.h>
 #include <qlib/qlib.h>
 
@@ -34,11 +35,23 @@ class null_model
 
     void set_model_state(qsim::model_state_t ms) { m_model_state = ms; }
 
+    using internal_state_t = std::string;
+    using init_data_t = internal_state_t;
+    void init(init_data_t i)
+    {
+        m_internal_state = i;
+        m_model_state = qsim::model_state_t::ready;
+    }
+
+    internal_state_t internal_state(void) const { return m_internal_state; }
+
     protected:
 
     qsim::model_instance_id_t m_instance_id;
 
     qsim::model_state_t m_model_state;
+
+    internal_state_t m_internal_state;
 
 };  // end null_model class
 

@@ -1,5 +1,5 @@
 /**
- * \file test-error.cpp
+ * \file error-test.cpp
  * Test for the qSim error class
  * 
  * \author Igor Siemienowicz

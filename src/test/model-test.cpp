@@ -1,5 +1,5 @@
 /**
- * \file test-model.cpp
+ * \file model-test.cpp
  * Test for the the basic model concept and framework
  * 
  * \author Igor Siemienowicz
@@ -58,7 +58,7 @@ TEST_CASE("casting model state", "[unit][model]")
 }   // end test for casting model state
 
 // Test basic instantiation of a model and its wrapper
-TEST_CASE("model and wrapper instantiation", "[unit][model]")
+TEST_CASE("model and wrapper life-cycle", "[unit][model]")
 {
 
     using null_model = test_models::null_model;
@@ -79,5 +79,12 @@ TEST_CASE("model and wrapper instantiation", "[unit][model]")
     REQUIRE(null_mw.model_type_id() == 1);
     REQUIRE(null_mw.model_instance_id() == 2);
     REQUIRE(null_mw.model_state() == qsim::model_state_t::none);
+
+    // Initialise the model - now it is in the ready state
+    null_mw.init("some data");
+    REQUIRE(null_mw.model_state() == qsim::model_state_t::ready);
+    REQUIRE(null_mw.model().internal_state() == "some data");
+
+    // TODO destruction
 
 }   // end null_model_instantiation

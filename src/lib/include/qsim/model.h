@@ -10,6 +10,9 @@
  */
 
 #include <optional>
+#include <string>
+#include <type_traits>
+
 #include <qlib/qlib.h>
 
 #include "model_state.h"
@@ -20,6 +23,33 @@
 #define _qsim_model_h_included
 
 namespace qsim {
+
+/**
+ * \brief An identifier for a *Model Type*
+ *
+ * A Model Type is roughly analagous to a C++ type or class, while a Model
+ * Instance corresponds to a C++ object.
+ */
+using model_type_id_t = id_t;
+
+/**
+ * \brief Alias for an undefined model type identifier
+ */
+constexpr id_t undefined_model_type_id = 0;
+
+/**
+ * \brief An identifier for a *Model Instance*
+ *
+ * A Model Type is roughly analagous to a C++ type or class, while a Model
+ * Instance corresponds to a C++ object. A Model Instance is sometimes
+ * referred to as an Entity in a Simulation.
+ */
+using model_instance_id_t = id_t;
+
+/**
+ * \brief Alias for an undefined model instance identifier
+ */
+constexpr id_t undefined_model_instance_id = 0;
 
 /**
  * \brief A wrapper for a Model Instances
@@ -105,6 +135,21 @@ concept bool HasModelState()
 }
 
 /**
+ * \brief Concept requiring a type to declare a subtype for initialisation
+ * data and an `init` method taking an instance of that sub-type
+ *
+ * \tparam The constrained type
+ */
+template <typename T>
+concept bool IsInitialisable()
+{
+    return
+        requires(T t) { typename T::init_data_t; }
+        &&
+        requires(T t, typename T::init_data_t d) { t.init(d); };
+}
+
+/**
  * \brief Constraints on a type so that it is usable as a Model class
  *
  * \tparam T The constrainted model type
@@ -113,9 +158,12 @@ template <typename T>
 concept bool IsModel()
 {
     return
-        HasModelTypeId<T>()
+        std::is_destructible<T>::value
+        && HasModelTypeId<T>()
         && HasModelInstanceId<T>()
-        && HasModelState<T>();
+        && HasModelState<T>()
+        && IsInitialisable<T>()
+        ;
 }   // end IsModel concet
 
 #endif  // QSIM_USE_CONCEPTS
@@ -147,6 +195,11 @@ class model_instance_wrapper : public model_wrapper
      * \brief An optional instance of the model type
      */
     using opt_model_t = std::optional<model_t>;
+
+    /**
+     * \brief The initialisation data structure of the model type
+     */
+    using init_data_t = typename model_t::init_data_t;
 
     /**
      * \brief Initialises model wrapper with an optional instance of its
@@ -215,6 +268,15 @@ class model_instance_wrapper : public model_wrapper
      */
     virtual model_state_t model_state(void) const override
         { return model().model_state(); }
+
+    /**
+     * \brief Initialise the model
+     *
+     * \param The initialisation data
+     *
+     * \throw std::bad_optional_access There is no wrapped model object
+     */
+    void init(init_data_t data) { model().init(std::move(data)); }
 
     protected:
 
