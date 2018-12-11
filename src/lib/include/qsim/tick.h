@@ -17,7 +17,7 @@
 namespace qsim {
 
 /**
- * \brief Tick counter for a simnulation
+ * \brief Tick counter for a simulation
  *
  * The beginning of simulation time (0 sec) is tick 0 (everything
  * initialised); tick number 1 is the end of the first time slice.

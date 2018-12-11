@@ -22,6 +22,10 @@ if (QSIM_USE_CONCEPTS)
     add_definitions(-DQSIM_USE_CONCEPTS)
 endif(QSIM_USE_CONCEPTS)
 
+# Threads
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 include_directories(
     .
     external

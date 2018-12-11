@@ -10,3 +10,4 @@
  */
 
 #include "null_model.h"
+#include "test_info.h"

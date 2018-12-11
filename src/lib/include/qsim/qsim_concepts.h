@@ -18,28 +18,24 @@
      * \brief Declare a template argument with concept-based constraints
      *
      * This macro only uses the concept name if `QSIM_USE_CONCEPTS` is
-     * defined, otherwise it uses the `template` keyword to declare a
+     * defined, otherwise it uses the `typename` keyword to declare a
      * generic unconstrained type
      *
      * \param ConceptName The concept to use
-     *
-     * \param TypeArg The name of the type placeholder
      */
-    #define QSIM_CONCEPT(ConceptName, TypeArg) ConceptName TypeArg
+    #define QSIM_CONCEPT(ConceptName) ConceptName
 
 #else
     /**
      * \brief Declare a template argument with concept-based constraints
      *
      * This macro only uses the concept name if `QSIM_USE_CONCEPTS` is
-     * defined, otherwise it uses the `template` keyword to declare a
+     * defined, otherwise it uses the `typename` keyword to declare a
      * generic unconstrained type
      *
      * \param ConceptName The concept to use
-     *
-     * \param TypeArg The name of the type placeholder
      */
-    #define QSIM_CONCEPT(ConceptName, TypeArg) typename TypeArg
+    #define QSIM_CONCEPT(ConceptName) typename
     
 #endif
 

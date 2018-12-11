@@ -10,4 +10,7 @@ add_library(test-models ${TEST_MODELS_SRC})
 
 file (GLOB TEST_SRC *.cpp)
 add_executable(test-qsim ${TEST_SRC})
-target_link_libraries(test-qsim fmt-header-only test-models)
+target_link_libraries(test-qsim
+    fmt-header-only
+    test-models
+    Threads::Threads)
