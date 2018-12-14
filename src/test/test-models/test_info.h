@@ -11,8 +11,8 @@
 
 #include <string>
 
-#ifndef _test_models_test_info_included_h
-#define _test_models_test_info_included_h
+#ifndef _test_models_test_info_h_included
+#define _test_models_test_info_h_included
 
 namespace test_models {
 
@@ -27,6 +27,6 @@ struct test_info
 
 };  // end test_info struct
 
-}   // end test_models method
+}   // end test_models namespace
 
 #endif

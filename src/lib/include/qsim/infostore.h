@@ -38,9 +38,8 @@ namespace qsim {
  * relationships in model dependency chains. Models add data to the current
  * collection, and query data from the current or previous collections.
  *
- * An Infostore object for a given type should be treated as a singleton, but
- * this is not enforced (e.g. using the singleton pattern). However, copy and
- * move semantics are disabled.
+ * An Infostore object for a given type should be treated as a singleton.
+ * Copy and move semantics are disabled.
  *
  * Operations on Infostore objects are thread-safe.
  *

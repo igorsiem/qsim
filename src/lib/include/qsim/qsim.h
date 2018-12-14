@@ -12,6 +12,7 @@
 #include "error.h"
 #include "id.h"
 #include "infostore.h"
+#include "is_exchange.h"
 #include "model.h"
 #include "model_concepts.h"
 #include "model_id.h"
