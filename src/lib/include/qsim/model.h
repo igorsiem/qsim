@@ -74,7 +74,7 @@ QSIM_DECLARE_POINTERS_FOR(model_wrapper)
  *
  * \todo Methods for setting and deleting model instances
  */
-template <QSIM_CONCEPT(IsModel) ModelT>
+template <QSIM_CONCEPT(is_model) ModelT>
 class model_instance_wrapper : public model_wrapper
 {
 
@@ -166,7 +166,7 @@ class model_instance_wrapper : public model_wrapper
     /**
      * \brief Initialise the model
      *
-     * \param data sThe initialisation data
+     * \param data The initialisation data
      *
      * \throw std::bad_optional_access There is no wrapped model object
      */

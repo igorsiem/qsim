@@ -9,6 +9,7 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
+#include "data_factory.h"
 #include "error.h"
 #include "id.h"
 #include "infostore.h"

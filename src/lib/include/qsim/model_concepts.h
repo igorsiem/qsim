@@ -26,7 +26,7 @@ namespace qsim {
  * \tparam T The constrained type
  */
 template <typename T>
-concept bool HasModelTypeId()
+concept bool has_model_type_id()
 {
     return requires(T t)
     {
@@ -40,7 +40,7 @@ concept bool HasModelTypeId()
  * \tparam T The constrained type
  */
 template <typename T>
-concept bool HasModelInstanceId()
+concept bool has_model_instance_id()
 {
     return requires(T t)
     {
@@ -54,7 +54,7 @@ concept bool HasModelInstanceId()
  * \tparam T The constrained type
  */
 template <typename T>
-concept bool HasModelState()
+concept bool has_model_state()
 {
     return requires(T t)
     {
@@ -69,10 +69,10 @@ concept bool HasModelState()
  * \tparam The constrained type
  */
 template <typename T>
-concept bool IsInitialisable()
+concept bool is_initialisable()
 {
     return
-        requires(T t) { typename T::init_data_t; }
+        requires(T) { typename T::init_data_t; }
         &&
         requires(T t, typename T::init_data_t d) { t.init(d); };
 }
@@ -83,14 +83,14 @@ concept bool IsInitialisable()
  * \tparam T The constrainted model type
  */
 template <typename T>
-concept bool IsModel()
+concept bool is_model()
 {
     return
         std::is_destructible<T>::value
-        && HasModelTypeId<T>()
-        && HasModelInstanceId<T>()
-        && HasModelState<T>()
-        && IsInitialisable<T>()
+        && has_model_type_id<T>()
+        && has_model_instance_id<T>()
+        && has_model_state<T>()
+        && is_initialisable<T>()
         ;
 }   // end IsModel concet
 
