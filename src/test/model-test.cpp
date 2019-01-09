@@ -65,25 +65,18 @@ TEST_CASE("model and wrapper life-cycle", "[unit][model]")
     using null_model_wrapper =
         qsim::model_instance_wrapper<test_models::null_model>;
 
-    // Null model wrapper with no model - attempt to access model information
-    // fails
-    null_model_wrapper no_model_mw;
-    REQUIRE_THROWS_AS(no_model_mw.model_type_id(), std::bad_optional_access);
-    REQUIRE_THROWS_AS(
-        no_model_mw.model_instance_id(), std::bad_optional_access);
-    REQUIRE_THROWS_AS(no_model_mw.model_state(), std::bad_optional_access);
 
-    // Instantiante a model wrapper with a proper model - can access its
-    // info
-    null_model_wrapper null_mw{ std::make_optional<null_model>(2) };
+    // Instantiante a null model wrapper - can access its info, but it is
+    // uninitialised
+    null_model_wrapper null_mw;
+
     REQUIRE(null_mw.model_type_id() == 1);
-    REQUIRE(null_mw.model_instance_id() == 2);
-    REQUIRE(null_mw.model_state() == qsim::model_state_t::none);
+    REQUIRE(null_mw.model_state() == qsim::model_state_t::uninitialised);
 
     // Initialise the model - now it is in the ready state
-    null_mw.init("some data");
-    REQUIRE(null_mw.model_state() == qsim::model_state_t::ready);
-    REQUIRE(null_mw.model().internal_state() == "some data");
+    null_mw.init({ 1 });
+    REQUIRE(null_mw.model_state() == qsim::model_state_t::ready);    
+    REQUIRE(null_mw.model_instance_id() == 1);
 
     // TODO destruction
 

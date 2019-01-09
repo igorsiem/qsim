@@ -14,10 +14,10 @@
 
 namespace test_models {
 
-null_model::null_model(qsim::model_instance_id_t iid) :
-    m_instance_id(iid)
-    , m_model_state(qsim::model_state_t::none)
-    , m_internal_state()
-{}
+void null_model::init(null_model::init_data_t i)
+{
+    m_instance_id = i.id;
+    m_internal_state.clear();
+}
 
 }   // end test_models namespace

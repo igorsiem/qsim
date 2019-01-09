@@ -35,7 +35,14 @@ class model_wrapper
 
     public:
 
-    DECLARE_DEFAULT_VIRTUAL_LIFE_CYCLE(model_wrapper)
+    /**
+     * \brief Constructor, initialising the model state
+     *
+     * \param ms The model state to set
+     */
+    explicit model_wrapper(model_state_t ms) : m_model_state(ms) {}
+
+    DECLARE_DEFAULT_DESTRUCTOR(model_wrapper)
 
     /**
      * \brief The type ID of the underlying model
@@ -56,7 +63,13 @@ class model_wrapper
      *
      * \return The model state enumerator
      */
-    virtual model_state_t model_state(void) const = 0;
+    virtual model_state_t model_state(void) const { return m_model_state; }
+
+    protected:
+
+    virtual void set_model_state(model_state_t ms) { m_model_state = ms; }
+
+    model_state_t m_model_state;
 
 };  // end class model_wrapper
 
@@ -86,98 +99,71 @@ class model_instance_wrapper : public model_wrapper
     using model_t = ModelT;
 
     /**
-     * \brief An optional instance of the model type
-     */
-    using opt_model_t = std::optional<model_t>;
-
-    /**
      * \brief The initialisation data structure of the model type
      */
     using init_data_t = typename model_t::init_data_t;
 
     /**
-     * \brief Initialises model wrapper with an optional instance of its
-     * model
-     *
-     * \param model_instance The optional model instance
+     * \brief Initialise the model wrapper, setting the model state to
+     * `uninitialised`
      */
-    model_instance_wrapper(opt_model_t model_instance = std::nullopt) :
-        model_wrapper()
-        , m_model_instance(model_instance)
+    model_instance_wrapper(void) :
+        model_wrapper(model_state_t::uninitialised)
+        , m_model_instance()
     {}
 
     DECLARE_DEFAULT_VIRTUAL_DESTRUCTOR(model_instance_wrapper)
 
     /**
-     * \brief Determine whether the Wrapper has a Model object
-     *
-     * \return `true` if the Wrapper has a model
-     */
-    bool has_model(void) const { return m_model_instance.has_value(); }
-
-    /**
      * \brief Access to the wrapped model
      *
      * \return A reference to the wrapped model object
-     *
-     * \throw std::bad_optional_access There is no wrapped model object
      */
-    model_t& model(void) { return m_model_instance.value(); }
+    model_t& model(void) { return m_model_instance; }
 
     /**
      * \brief Const access to the wrapped model
      *
      * \return A const reference to the wrapped model object
-     *
-     * \throw std::bad_optional_access There is no wrapped model object
      */
-    const model_t& model(void) const { return m_model_instance.value(); }
+    const model_t& model(void) const { return m_model_instance; }
 
     /**
      * \brief The type ID of the underlying model
      *
      * \return The ID of the model type
-     *
-     * \throw std::bad_optional_access There is no wrapped model object
      */
     virtual model_type_id_t model_type_id(void) const override
-        { return model().model_type_id(); }
+        { return model_t::model_type_id(); }
 
     /**
      * \brief The instance ID of the underlying model
      *
      * \return The ID of the model instance
-     *
-     * \throw std::bad_optional_access There is no wrapped model object
      */
     virtual model_instance_id_t model_instance_id(void) const override
-        { return model().model_instance_id(); }
-
-    /**
-     * \brief Retrieve the state of the underlying model
-     *
-     * \return The model state enumerator
-     *
-     * \throw std::bad_optional_access There is no wrapped model object
-     */
-    virtual model_state_t model_state(void) const override
-        { return model().model_state(); }
+        { return m_model_instance.model_instance_id(); }
 
     /**
      * \brief Initialise the model
      *
-     * \param data The initialisation data
+     * Calls the underlying model's `init` method, and sets the model state
+     * `ready`.
      *
-     * \throw std::bad_optional_access There is no wrapped model object
+     * \param data The initialisation data
      */
-    void init(init_data_t data) { model().init(std::move(data)); }
+    void init(init_data_t data)
+    {
+        model().init(std::move(data));
+        set_model_state(model_state_t::ready);
+    }
 
     protected:
 
     /**
-     * \brief The optional underlying model instance
+     * \brief The underlying model instance
      */
-    opt_model_t m_model_instance;
+    model_t m_model_instance;
 
 };  // end model_instance_wrapper class
 

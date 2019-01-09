@@ -25,31 +25,26 @@ class null_model
 
     public:
 
-    null_model(qsim::model_instance_id_t iid);
+    null_model(void) : m_instance_id(0), m_internal_state() {}
     static qsim::model_type_id_t model_type_id(void) { return 1; }
     
     qsim::model_instance_id_t model_instance_id(void) const
         { return m_instance_id; }
 
-    qsim::model_state_t model_state(void) const { return m_model_state; }
-
-    void set_model_state(qsim::model_state_t ms) { m_model_state = ms; }
-
     using internal_state_t = std::string;
-    using init_data_t = internal_state_t;
-    void init(init_data_t i)
+
+    struct init_data_t
     {
-        m_internal_state = i;
-        m_model_state = qsim::model_state_t::ready;
-    }
+        qsim::model_instance_id_t id;
+    };
+
+    void init(init_data_t i);
 
     internal_state_t internal_state(void) const { return m_internal_state; }
 
     protected:
 
     qsim::model_instance_id_t m_instance_id;
-
-    qsim::model_state_t m_model_state;
 
     internal_state_t m_internal_state;
 

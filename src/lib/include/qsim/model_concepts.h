@@ -48,19 +48,19 @@ concept bool has_model_instance_id()
     };
 }
 
-/**
- * \brief Concept requiring a type to have a model state retrieval method
- *
- * \tparam T The constrained type
- */
-template <typename T>
-concept bool has_model_state()
-{
-    return requires(T t)
-    {
-        { t.model_state() } -> model_state_t;
-    };
-}
+////**
+/// * \brief Concept requiring a type to have a model state retrieval method
+/// *
+/// * \tparam T The constrained type
+/// */
+///template <typename T>
+///concept bool has_model_state()
+///{
+///    return requires(T t)
+///    {
+///        { t.model_state() } -> model_state_t;
+///    };
+///}
 
 /**
  * \brief Concept requiring a type to declare a subtype for initialisation
@@ -86,10 +86,11 @@ template <typename T>
 concept bool is_model()
 {
     return
-        std::is_destructible<T>::value
+        std::is_default_constructible<T>::value
+        && std::is_destructible<T>::value
         && has_model_type_id<T>()
         && has_model_instance_id<T>()
-        && has_model_state<T>()
+///        && has_model_state<T>()
         && is_initialisable<T>()
         ;
 }   // end IsModel concet
@@ -99,3 +100,51 @@ concept bool is_model()
 }   // end qsim namespace
 
 #endif // _qsim_model_concepts_h_included defined
+
+/**
+ * \page model_object_life_cycle Model Object Life-cycle
+ *
+ * qSim models have a distinct and carefully managed life-cycle that is
+ * intended to optimise resource and computing efficiency while placing as
+ * few constraints as possible on model implementations. Model objects may be
+ * of any class conforming to the concepts defined in the `model_concepts.h`
+ * file, and are intended to encapsulate entities in the simulation.
+ *
+ * Specifically, model objects have the following life-cycle:
+ *
+ * 1. *Construction* -- Model object construction is very simple because a
+ *    separate initialisation phase also takes place before a simulation
+ *    commences. Models must be default-constructible
+ *
+ * 2. *Initialisation* -- Model objects are initialised with an arbitary
+ *    data structure prior to the beginning of a simulation. The constraints
+ *    on initialisation are as follows:
+ *
+ *    a. Model objects must be capable of being initialised repeatedly, with
+ *       consistent results.
+ *
+ *    b. Initialisation must include setting the instance ID to a unique
+ *       identifier; repeated initialisations must set the instance ID to the
+ *       same value every time (this implies that initialisation data
+ *       includes the instance ID, and be supplied to the initialisation
+ *       method with the same ID every time).
+ *
+ *    c. The model must be ready to be 'ticked' after a successful
+ *       initialisation.
+ *
+ *    d. Models may signal initialisation failure with an exception.
+ *
+ * 3. *Ticking* -- Models are repeatedly 'ticked' as the simulation
+ *    progresses. In each tick, the model:
+ *
+ *    a. Take its input from infostore objects
+ *
+ *    b. Update its internal state
+ *
+ *    c. Send its output to infostore objects
+ *
+ * 4. *Re-initialisation* -- This is the same as initialisation, and makes
+ *    the model ready to repeat the simulation
+ *
+ * 5. *Destruction* -- All resources released
+ */
