@@ -86,8 +86,9 @@ template <typename T>
 concept bool is_model()
 {
     return
-        std::is_default_constructible<T>::value
-        && std::is_destructible<T>::value
+///        std::is_default_constructible<T>::value
+///        &&
+        std::is_destructible<T>::value
         && has_model_type_id<T>()
         && has_model_instance_id<T>()
 ///        && has_model_state<T>()
