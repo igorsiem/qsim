@@ -15,6 +15,7 @@
 
 #include <qlib/qlib.h>
 
+#include "data_factory.h"
 #include "model_concepts.h"
 #include "qsim_pointers.h"
 
@@ -65,6 +66,13 @@ class model_wrapper
      */
     virtual model_state_t model_state(void) const { return m_model_state; }
 
+    /**
+     * \brief Initialise the model, ready for simulation
+     *
+     * After this method is called, the model state should be `ready`.
+     */
+    virtual void init(void) = 0;
+
     protected:
 
     virtual void set_model_state(model_state_t ms) { m_model_state = ms; }
@@ -85,9 +93,12 @@ QSIM_DECLARE_POINTERS_FOR(model_wrapper)
  *
  * \tparam ModelT The Model type
  *
- * \todo Methods for setting and deleting model instances
+ * \tparam InitDataFactoryT The type used as a data factory for initialising
+ * the model
  */
-template <QSIM_CONCEPT(is_model) ModelT>
+template <
+    QSIM_CONCEPT(is_model) ModelT
+    , QSIM_CONCEPT(is_data_factory) InitDataFactoryT>
 class model_instance_wrapper : public model_wrapper
 {
 
@@ -104,12 +115,34 @@ class model_instance_wrapper : public model_wrapper
     using init_data_t = typename model_t::init_data_t;
 
     /**
+     * \brief The type used as a data factory for initialising the model
+     */
+    using init_data_factory_t = InitDataFactoryT;
+
+    /**
+     * \brief A unique pointer to the data factory type
+     */
+    using init_data_factory_upr = std::unique_ptr<init_data_factory_t>;
+
+    // Ensure that the initialisation data factory yields the same type as
+    // that required to initialise the model.
+    static_assert(
+        std::is_same<
+            init_data_t
+            , typename init_data_factory_t::data_t>::value
+        , "model initialisation type must be the same as the data type of "
+            "its initialisation factory");
+
+    /**
      * \brief Initialise the model wrapper, setting the model state to
      * `uninitialised`
+     *
+     * \param init_df A unique pointer to the initialisation data factory
      */
-    model_instance_wrapper(void) :
+    explicit model_instance_wrapper(init_data_factory_upr&& init_df) :
         model_wrapper(model_state_t::uninitialised)
         , m_model_instance()
+        , m_init_df(std::move(init_df))
     {}
 
     DECLARE_DEFAULT_VIRTUAL_DESTRUCTOR(model_instance_wrapper)
@@ -147,16 +180,16 @@ class model_instance_wrapper : public model_wrapper
     /**
      * \brief Initialise the model
      *
-     * Calls the underlying model's `init` method, and sets the model state
-     * `ready`.
+     * This method initiaises the underlying model, using the initialisation
+     * data factory, and sets the model state to `ready`.
      *
      * \param data The initialisation data
      */
-    void init(init_data_t data)
+    virtual void init(void) override
     {
-        model().init(std::move(data));
+        model().init(std::move(m_init_df->get()));
         set_model_state(model_state_t::ready);
-    }
+    }   // end init method
 
     protected:
 
@@ -164,6 +197,11 @@ class model_instance_wrapper : public model_wrapper
      * \brief The underlying model instance
      */
     model_t m_model_instance;
+
+    /**
+     * \brief The initialisation data factory for this model
+     */
+    init_data_factory_upr m_init_df;
 
 };  // end model_instance_wrapper class
 

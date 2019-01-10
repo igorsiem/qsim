@@ -17,7 +17,6 @@
 #include "model.h"
 #include "model_concepts.h"
 #include "model_id.h"
-#include "model_integration.h"
 #include "model_state.h"
 #include "qsim_concepts.h"
 #include "qsim_time.h"

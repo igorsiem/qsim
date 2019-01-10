@@ -17,7 +17,7 @@ namespace test_models {
 void null_model::init(null_model::init_data_t i)
 {
     m_instance_id = i.id;
-    m_internal_state.clear();
+    m_internal_state = i.internal_state;
 }
 
 }   // end test_models namespace

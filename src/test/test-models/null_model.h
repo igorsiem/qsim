@@ -19,6 +19,23 @@
 
 namespace test_models {
 
+struct null_init_df
+{
+
+    struct data_t
+    {
+        qsim::model_instance_id_t id = 1;
+        std::string internal_state;
+    };
+
+    data_t m_data;
+
+    null_init_df(qsim::model_instance_id_t id, std::string is) :
+        m_data{id, is} {}
+
+    data_t get(void) const { return m_data; }
+};
+
 // Example of model class that does absolutely nothing
 class null_model
 {
@@ -33,10 +50,7 @@ class null_model
 
     using internal_state_t = std::string;
 
-    struct init_data_t
-    {
-        qsim::model_instance_id_t id;
-    };
+    using init_data_t = null_init_df::data_t;
 
     void init(init_data_t i);
 
