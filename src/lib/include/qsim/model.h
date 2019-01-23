@@ -17,6 +17,7 @@
 
 #include "data_factory.h"
 #include "model_concepts.h"
+#include "qsim_mutex.h"
 #include "qsim_pointers.h"
 
 #ifndef _qsim_model_h_included
@@ -28,7 +29,8 @@ namespace qsim {
  * \brief A wrapper class for different types of model
  *
  * This class uses the type erasure pattern to provide a generic interface
- * to model operations.
+ * to model operations. It also implements thread-safety, so that the model
+ * itself need not do so.
  */
 class model_wrapper
 {
@@ -189,7 +191,8 @@ class model_wrapper
     model_wrapper(
             std::unique_ptr<ModelT>&& model
             , std::unique_ptr<InitDataFactoryT>&& init_df) :
-        m_wrapped_model(
+        m_mutex()
+        , m_wrapped_model(
             std::make_unique<
                 mw_te_impl<
                     ModelT
@@ -217,14 +220,21 @@ class model_wrapper
      * \return The instance ID
      */
     model_instance_id_t model_instance_id(void) const
-        { return m_wrapped_model->model_instance_id(); }
+    {
+        read_lock lck(m_mutex);
+        return m_wrapped_model->model_instance_id();
+    }
 
     /**
      * \brief Retrieve the state of the Model
      *
      * \return The model state enumerator
      */
-    model_state_t model_state(void) const { return m_model_state; }
+    model_state_t model_state(void) const
+    {
+        read_lock lck(m_mutex);
+        return m_model_state;
+    }
 
     /**
      * \brief Initialise the model, ready for simulation
@@ -233,11 +243,19 @@ class model_wrapper
      */
     virtual void init(void)
     {
+        write_lock lck(m_mutex);
+
         m_wrapped_model->init();
         m_model_state = model_state_t::ready;
     }
 
     protected:
+
+    /**
+     * \brief A mutex object protecting access to the wrapper model and the
+     * state enumerator
+     */
+    mutable mutex m_mutex;
 
     /**
      * \brief The instance of the concept implementation class
@@ -251,7 +269,12 @@ class model_wrapper
 
 };  // end class model_wrapper
 
-QSIM_DECLARE_POINTERS_FOR(model_wrapper)
+QSIM_DECLARE_UNIQUE_POINTERS_FOR(model_wrapper)
+
+/**
+ * \brief A vector of model wrappers
+ */
+using model_vector= std::vector<model_wrapper_upr>;
 
 }   // end qsim namespace
 

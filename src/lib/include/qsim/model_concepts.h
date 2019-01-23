@@ -48,20 +48,6 @@ concept bool has_model_instance_id()
     };
 }
 
-////**
-/// * \brief Concept requiring a type to have a model state retrieval method
-/// *
-/// * \tparam T The constrained type
-/// */
-///template <typename T>
-///concept bool has_model_state()
-///{
-///    return requires(T t)
-///    {
-///        { t.model_state() } -> model_state_t;
-///    };
-///}
-
 /**
  * \brief Concept requiring a type to declare a subtype for initialisation
  * data and an `init` method taking an instance of that sub-type
@@ -86,15 +72,12 @@ template <typename T>
 concept bool is_model()
 {
     return
-///        std::is_default_constructible<T>::value
-///        &&
         std::is_destructible<T>::value
         && has_model_type_id<T>()
         && has_model_instance_id<T>()
-///        && has_model_state<T>()
         && is_initialisable<T>()
         ;
-}   // end IsModel concet
+}   // end is_model concept
 
 #endif  // QSIM_USE_CONCEPTS
 

@@ -15,7 +15,27 @@
 #define _qsim_qsim_pointers_h_included
 
 /**
- * \brief Declare smart pointer types for a give type
+ * \brief Declare shared pointer types for a give type
+ *
+ * \param name The type name for which corresponding shared pointer types are
+ * to be declared
+ */
+#define QSIM_DECLARE_SHARED_POINTERS_FOR( name ) \
+    using name##_spr = std::shared_ptr<name>; \
+    using const_##name##_spr = std::shared_ptr<const name>;
+
+/**
+ * \brief Declare unique pointer types for a give type
+ *
+ * \param name The type name for which corresponding unique pointer types are
+ * to be declared
+ */
+#define QSIM_DECLARE_UNIQUE_POINTERS_FOR( name ) \
+    using name##_upr = std::unique_ptr<name>; \
+    using const_##name##_upr = std::unique_ptr<const name>;
+
+/**
+ * \brief Declare smart (shared and unique) pointer types for a give type
  *
  * This method declaes shared and unique pointers to instances and const
  * instances of a given type name.
@@ -24,9 +44,7 @@
  * declared
  */
 #define QSIM_DECLARE_POINTERS_FOR( name ) \
-    using name##_spr = std::shared_ptr<name>; \
-    using const_##name##_spr = std::shared_ptr<const name>; \
-    using name##_upr = std::unique_ptr<name>; \
-    using const_##name##_upr = std::unique_ptr<const name>;
+    QSIM_DECLARE_SHARED_POINTERS_FOR( name ) \
+    QSIM_DECLARE_UNIQUE_POINTERS_FOR( name )
 
 #endif

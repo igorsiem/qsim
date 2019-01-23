@@ -1,6 +1,6 @@
 /**
  * \file model-test.cpp
- * Test for the the basic model concept and framework
+ * Test for the basic model concept and framework
  * 
  * \author Igor Siemienowicz
  * 
@@ -63,7 +63,6 @@ TEST_CASE("model and wrapper life-cycle", "[unit][model]")
 
     using null_model = test_models::null_model;
     using null_init_df = test_models::null_init_df;
-
 
     // Instantiate a Model Wrapper, with its Model and Initialisation Data
     // Factory. Can access its data, but it is uninitialised.
