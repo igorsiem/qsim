@@ -9,6 +9,7 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
+#include "exchange.h"
 #include "model_factory.h"
 #include "monitor.h"
 #include "null_model.h"

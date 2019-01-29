@@ -65,7 +65,7 @@ class infostore
     using info_vector = std::vector<info_t>;
 
     /**
-     * \brief Trivial defaul constructor, initialising all attributes
+     * \brief Trivial default constructor, initialising all attributes
      */
     infostore(void) :
         m_mtx()

@@ -75,6 +75,37 @@ const infostore<InfoT>& get_infostore(const is_exchange<InfoTs...>& ise)
     return std::get<infostore<InfoT> >(ise);
 }
 
+/// \cond Execute `clear` operation over tuple of InfoStores
+template <typename ISExchangeT, std::size_t... Indices>
+std::array<int, std::tuple_size<ISExchangeT>::value> clear(
+        ISExchangeT& is_exchange
+        , std::index_sequence<Indices...>)
+{
+    return std::array<int, std::tuple_size<ISExchangeT>::value>
+    {
+        (std::get<Indices>(is_exchange).clear(), 0)...
+    };
+}   // end clear method
+
+/// \endcond
+
+/**
+ * \brief Clear all the InfoStores in an Exchange
+ *
+ * \tparam ISExchangeT An `is_exchange` type (tuple of InfoStores)
+ *
+ * \param is_exchange The IS exchange object
+ *
+ * \todo Implement paralellised version of this method
+ */
+template <typename ISExchangeT>
+void clear(ISExchangeT& is_exchange)
+{
+    clear(
+        is_exchange
+        , std::make_index_sequence<std::tuple_size<ISExchangeT>::value>());
+}   // end clear method
+
 }   // end qsim namespace
 
 #endif

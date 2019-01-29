@@ -17,8 +17,9 @@ TEST_CASE("infostore", "[unit][infostore]")
 {
 
     // Instantiate the infostore - initially, it has no data.
-    using test_info_is = qsim::infostore<test_models::test_info>;
-    test_info_is is;
+///    using test_info_is = qsim::infostore<test_models::test_info>;
+    using test_info_is_t = test_models::test_info_is_t;
+    test_info_is_t is;
 
     REQUIRE(is.current_data_from(1).empty());
     REQUIRE(is.previous_data_from(1).empty());
@@ -31,7 +32,7 @@ TEST_CASE("infostore", "[unit][infostore]")
     // but no previous data, or data from models 2 and 3.
     is.add(
         1
-        , test_info_is::info_vector{
+        , test_info_is_t::info_vector{
             test_models::test_info{1, "one", 1.0 }
             , test_models::test_info{2, "two", 2.0}});
 
@@ -46,7 +47,7 @@ TEST_CASE("infostore", "[unit][infostore]")
     // no previous data, and no data for model 3.
     is.add(
         2
-        , test_info_is::info_vector{
+        , test_info_is_t::info_vector{
             test_models::test_info{3, "three", 3.0 }});
 
     REQUIRE(is.current_data_from(1).size() == 2);
