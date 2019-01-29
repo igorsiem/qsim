@@ -23,3 +23,13 @@
 #include "qsim_pointers.h"
 #include "scenario.h"
 #include "tick.h"
+
+/**
+ * \mainpage qSim
+ *
+ * *qSim* is a C++-based simulation framework.
+ *
+ * Boost is copyright (c) 2018, 2019 by Igor Siemienowicz, and distributed
+ * under the Boost Software License. See the accompanying LICENSE_1_0.txt
+ * file or https://www.boost.org/LICENSE_1_0.txt for more details.
+ */

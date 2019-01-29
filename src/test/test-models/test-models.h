@@ -10,6 +10,7 @@
  */
 
 #include "model_factory.h"
+#include "monitor.h"
 #include "null_model.h"
 #include "string_factory.h"
 #include "test_info.h"

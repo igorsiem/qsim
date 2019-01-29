@@ -61,22 +61,29 @@ TEST_CASE("casting model state", "[unit][model]")
 TEST_CASE("model and wrapper life-cycle", "[unit][model]")
 {
 
+    using monitor = test_models::monitor;
     using null_model = test_models::null_model;
     using null_init_df = test_models::null_init_df;
+
+    auto mntr = std::make_shared<test_models::monitor>();
 
     // Instantiate a Model Wrapper, with its Model and Initialisation Data
     // Factory. Can access its data, but it is uninitialised.
     qsim::model_wrapper null_mw(
-        std::make_unique<null_model>()
+        std::make_unique<null_model>(mntr)
         , std::make_unique<null_init_df>(1, "hello"));
 
     REQUIRE(null_mw.model_type_id() == 1);
     REQUIRE(null_mw.model_state() == qsim::model_state_t::uninitialised);
+    REQUIRE(mntr->initialised_entity_count() == 0);
+    REQUIRE(mntr->entity_is_initialised(1) == false);
 
     // Initialise the model - now it is in the ready state
     null_mw.init();
     REQUIRE(null_mw.model_state() == qsim::model_state_t::ready);    
     REQUIRE(null_mw.model_instance_id() == 1);
+    REQUIRE(mntr->initialised_entity_count() == 1);
+    REQUIRE(mntr->entity_is_initialised(1) == true);
 
     // TODO destruction
 

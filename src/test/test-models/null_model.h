@@ -13,6 +13,7 @@
 #include <string>
 #include <qsim/qsim.h>
 #include <qlib/qlib.h>
+#include "monitor.h"
 
 #ifndef _test_models_null_model_included_h
 #define _test_models_null_model_included_h
@@ -42,7 +43,12 @@ class null_model
 
     public:
 
-    null_model(void) : m_instance_id(0), m_internal_state() {}
+    explicit null_model(std::shared_ptr<monitor> mtr) :
+        m_instance_id(0)
+        , m_internal_state()
+        , m_monitor(mtr)
+    {}
+
     static qsim::model_type_id_t model_type_id(void) { return 1; }
     
     qsim::model_instance_id_t model_instance_id(void) const
@@ -61,6 +67,8 @@ class null_model
     qsim::model_instance_id_t m_instance_id;
 
     internal_state_t m_internal_state;
+
+    std::shared_ptr<monitor> m_monitor;
 
 };  // end null_model class
 

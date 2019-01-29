@@ -86,7 +86,7 @@ concept bool is_model()
 #endif // _qsim_model_concepts_h_included defined
 
 /**
- * \page model_object_life_cycle Model Object Life-cycle
+ * \page model_object_life_cycle Model Object (Entity) Life-cycle
  *
  * qSim models have a distinct and carefully managed life-cycle that is
  * intended to optimise resource and computing efficiency while placing as
@@ -98,7 +98,9 @@ concept bool is_model()
  *
  * 1. *Construction* -- Model object construction is very simple because a
  *    separate initialisation phase also takes place before a simulation
- *    commences. Models must be default-constructible
+ *    commences. Models must be default-constructible, and are generally
+ *    constructed for a Scenario using a Model Factory (see the page entitled
+ *    \ref model_factory).
  *
  * 2. *Initialisation* -- Model objects are initialised with an arbitary
  *    data structure prior to the beginning of a simulation. The constraints

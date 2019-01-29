@@ -18,6 +18,7 @@ void null_model::init(null_model::init_data_t i)
 {
     m_instance_id = i.id;
     m_internal_state = i.internal_state;
+    m_monitor->signal_entity_initialised(m_instance_id);
 }
 
 }   // end test_models namespace

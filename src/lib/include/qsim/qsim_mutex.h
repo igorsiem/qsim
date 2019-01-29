@@ -10,6 +10,7 @@
  */
 
 #include <shared_mutex>
+#include <qlib/qlib.h>
 
 #ifndef _qsim_qsim_mutex_h_included
 #define _qsim_qsim_mutex_h_included
@@ -30,6 +31,29 @@ using read_lock = std::shared_lock<mutex>;
  * \brief Exclusive lock to write protected data
  */
 using write_lock = std::unique_lock<mutex>;
+
+/**
+ * \brief The thread pool type used for parallelisation
+ */
+using thread_pool = qlib::thread_pool;
+
+/**
+ * \page Multithreading
+ *
+ * *qSim* is a multi-threaded application that uses parallel execution to
+ * speed up simulation times. The core element of most parallelised
+ * algorithms is the `thread_pool` class (from the `qlib` library), which is
+ * simple implementation of a Worker Thread Pool.
+ *
+ * Most *qSim* executables will instantiate a single `thread_pool` instance
+ * that is passed around the various elements as a shared pointer, and can
+ * schedule tasks whenever they need to. One of example of this is the
+ * `init` method of the `scenario` class, which initialises the models in
+ * parallel.
+ *
+ * \todo Expand Multithreading page to discuss parallelism and lock-step
+ * simulation
+ */
 
 }   // end qsim namespace
 

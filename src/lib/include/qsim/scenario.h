@@ -10,6 +10,7 @@
  */
 
 #include <functional>
+#include <qlib/qlib.h>
 #include "model.h"
 #include "qsim_concepts.h"
 #include "qsim_mutex.h"
@@ -50,6 +51,19 @@ concept bool is_model_factory()
 #endif
 
 /**
+ * \page model_factory Model Factory Concept
+ *
+ * The `is_model_factory` concept defines an object that is capable of
+ * populating a collection of models, creating `model_wrapper` objects in
+ * some implementation-defined way (e.g. loading entity definitions from a
+ * file).
+ *
+ * Model Factories are passed to the `populate_from` method of the `scenario`
+ * class to fill the Scenario with models. These can then be initialised
+ * and run.
+ */
+
+/**
  * \brief A single scenario 'world' in a simulation
  *
  * A Scenario is a collection of models and other structures necessary for
@@ -68,7 +82,11 @@ class scenario
      * Scenario objects must be populated with models before they can be
      * initialised and run.
      */
-    scenario(void) : m_mutex(), m_models() {}
+    explicit scenario(std::shared_ptr<thread_pool> thread_pool) :
+        m_mutex()
+        , m_models()
+        , m_thread_pool(thread_pool)
+    {}
 
     DECLARE_DEFAULT_DESTRUCTOR(scenario)
     DECLARE_NO_COPY_SEMANTICS(scenario)
@@ -105,6 +123,31 @@ class scenario
         return m_models.size();
     }   // end models_size method
 
+    /**
+     * \brief Initialise the scenario
+     *
+     * This method initialises all the models in the scenario.
+     */
+    void init(void)
+    {
+        std::vector<std::future<void> > results;
+
+        write_lock lck(m_mutex);
+        
+        for (auto& model : m_models)
+        {
+            results.emplace_back(
+                m_thread_pool->enqueue([&model](void)
+                {
+                    model->init();
+                }));
+        }
+
+        // Wait for all the tasks to finish, and re-throw any exceptions in
+        // the calling thread.
+        for (auto& r : results) r.get();
+    }   // end init method
+
     protected:
 
     /**
@@ -119,6 +162,11 @@ class scenario
      * \brief The main models collection
      */
     model_vector m_models;
+
+    /**
+     * \brief The thread-pool to use for parallel execution
+     */
+    std::shared_ptr<thread_pool> m_thread_pool;
 
 };  // end scenario class
 
