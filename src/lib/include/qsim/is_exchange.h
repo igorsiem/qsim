@@ -10,6 +10,7 @@
  */
 
 #include "infostore.h"
+#include "qsim_mutex.h"
 
 #ifndef _qsim_is_exchange_h_included
 #define _qsim_is_exchange_h_included
@@ -86,7 +87,6 @@ std::array<int, std::tuple_size<ISExchangeT>::value> clear(
         (std::get<Indices>(is_exchange).clear(), 0)...
     };
 }   // end clear method
-
 /// \endcond
 
 /**
@@ -104,6 +104,54 @@ void clear(ISExchangeT& is_exchange)
     clear(
         is_exchange
         , std::make_index_sequence<std::tuple_size<ISExchangeT>::value>());
+}   // end clear method
+
+/// \cond Execute `clear` operation over tuple of InfoStores, using a thread
+// pool, and the indices trick
+template <typename InfoStoreT>
+std::future<void> clear_is(InfoStoreT& is, thread_pool& tp)
+{
+    return tp.enqueue([&is](void) { is.clear(); });
+}
+
+template <typename ISExchangeT, std::size_t... Indices>
+std::array<std::future<void>, std::tuple_size<ISExchangeT>::value>
+clear(
+        ISExchangeT& is_exchange
+        , thread_pool& tp
+        , std::index_sequence<Indices...>)
+{
+    return std::array<std::future<void>, std::tuple_size<ISExchangeT>::value>
+        { clear_is(std::get<Indices>(is_exchange), tp)... };
+
+}   // end clear method
+/// \endcond
+
+/**
+ * \brief Execute the 'clear' operation over an ISExchange (tuple of
+ * InfoStores)
+ *
+ * \tparam ISExchangeT The IS Exchange - a tuple of InfoStores
+ *
+ * \param is_exchange The IS Exchange object
+ *
+ * \param tp The thread pool to use
+ */
+template <typename ISExchangeT>
+void clear(ISExchangeT& is_exchange, thread_pool& tp)
+{
+
+    // Execute the clear operation over the tuple, using the thread pool, and
+    // receiving an array of futures for the individual clear operations in
+    // return.
+    auto futures = std::move(clear(
+        is_exchange
+        , tp
+        , std::make_index_sequence<std::tuple_size<ISExchangeT>::value>()));
+
+    // Do a 'get' on all the futures we got back to make sure they're
+    // finished, and also to re-throw any exceptions.
+    for (auto& f : futures) f.get();
 }   // end clear method
 
 }   // end qsim namespace

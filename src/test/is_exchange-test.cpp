@@ -53,11 +53,24 @@ TEST_CASE("is_exchange", "[unit][is_exchange]")
     REQUIRE(string_is.current_data_from(1).size() == 1);
     REQUIRE(int_is.current_data_from(1).size() == 1);    
 
-    // Call clear on each IS in the exchange - IS objects are now empty.
-    clear(ise);
+    SECTION("clear exchange sequentially")
+    {
+        // Call clear on each IS in the exchange - IS objects are now empty.
+        clear(ise);
 
-    REQUIRE(test_info_is.current_data_from(1).size() == 0);
-    REQUIRE(string_is.current_data_from(1).size() == 0);
-    REQUIRE(int_is.current_data_from(1).size() == 0);
+        REQUIRE(test_info_is.current_data_from(1).size() == 0);
+        REQUIRE(string_is.current_data_from(1).size() == 0);
+        REQUIRE(int_is.current_data_from(1).size() == 0);
+    }
+
+    SECTION("clear exchange with parallelisation")
+    {
+        qsim::thread_pool tp;
+        clear(ise, tp);
+
+        REQUIRE(test_info_is.current_data_from(1).size() == 0);
+        REQUIRE(string_is.current_data_from(1).size() == 0);
+        REQUIRE(int_is.current_data_from(1).size() == 0);
+    }
 
 }   // end is_exchange test
