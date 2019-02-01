@@ -20,22 +20,27 @@ namespace qsim {
 /**
  * \brief Type of mutex used throughout qSim
  */
-using mutex = std::shared_mutex;
+using shared_mutex = qlib::shared_mutex;
 
 /**
  * \brief Non-exclusive lock to read protected data
  */
-using read_lock = std::shared_lock<mutex>;
+using read_lock = std::shared_lock<shared_mutex>;
 
 /**
  * \brief Exclusive lock to write protected data
  */
-using write_lock = std::unique_lock<mutex>;
+using write_lock = std::unique_lock<shared_mutex>;
 
 /**
  * \brief The thread pool type used for parallelisation
  */
 using thread_pool = qlib::thread_pool;
+
+/**
+ * \brief The future object type used in qSim (taken from qLib)
+ */
+template <typename R> using future = qlib::future<R>;
 
 /**
  * \page Multithreading

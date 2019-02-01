@@ -10,7 +10,7 @@
  */
 
 #include "infostore.h"
-#include "qsim_mutex.h"
+#include "qsim_thread.h"
 
 #ifndef _qsim_is_exchange_h_included
 #define _qsim_is_exchange_h_included
@@ -109,19 +109,19 @@ void clear(ISExchangeT& is_exchange)
 /// \cond Execute `clear` operation over tuple of InfoStores, using a thread
 // pool, and the indices trick
 template <typename InfoStoreT>
-std::future<void> clear_is(InfoStoreT& is, thread_pool& tp)
+future<void> clear_is(InfoStoreT& is, thread_pool& tp)
 {
     return tp.enqueue([&is](void) { is.clear(); });
 }
 
 template <typename ISExchangeT, std::size_t... Indices>
-std::array<std::future<void>, std::tuple_size<ISExchangeT>::value>
+std::array<future<void>, std::tuple_size<ISExchangeT>::value>
 clear(
         ISExchangeT& is_exchange
         , thread_pool& tp
         , std::index_sequence<Indices...>)
 {
-    return std::array<std::future<void>, std::tuple_size<ISExchangeT>::value>
+    return std::array<future<void>, std::tuple_size<ISExchangeT>::value>
         { clear_is(std::get<Indices>(is_exchange), tp)... };
 
 }   // end clear method
@@ -149,8 +149,9 @@ void clear(ISExchangeT& is_exchange, thread_pool& tp)
         , tp
         , std::make_index_sequence<std::tuple_size<ISExchangeT>::value>()));
 
-    // Do a 'get' on all the futures we got back to make sure they're
-    // finished, and also to re-throw any exceptions.
+    // Wait for all the tasks to complete, and then do a 'get' on each future
+    // to re-throw any exceptions.
+    boost::wait_for_all(futures.begin(), futures.end());
     for (auto& f : futures) f.get();
 }   // end clear method
 

@@ -17,7 +17,7 @@
 
 #include "data_factory.h"
 #include "model_concepts.h"
-#include "qsim_mutex.h"
+#include "qsim_thread.h"
 #include "qsim_pointers.h"
 
 #ifndef _qsim_model_h_included
@@ -255,7 +255,7 @@ class model_wrapper
      * \brief A mutex object protecting access to the wrapper model and the
      * state enumerator
      */
-    mutable mutex m_mutex;
+    mutable shared_mutex m_mutex;
 
     /**
      * \brief The instance of the concept implementation class

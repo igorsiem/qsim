@@ -17,7 +17,7 @@
 #include "model_concepts.h"
 #include "model_id.h"
 #include "qsim_concepts.h"
-#include "qsim_mutex.h"
+#include "qsim_thread.h"
 #include "qsim_pointers.h"
 
 #ifndef _qsim_infostore_h_included
@@ -121,12 +121,13 @@ class infostore
      * current time step; this will be empty if the model has not produced
      * any data
      */
-    info_vector current_data_from(model_instance_id_t miid)
+    info_vector current_data_from(model_instance_id_t miid) const
     {
         read_lock lck(m_mtx);
-        if (m_current_data.find(miid) == m_current_data.end())
+        auto itr = m_current_data.find(miid);
+        if (itr == m_current_data.end())
             return info_vector();
-        else return m_current_data[miid];
+        else return itr->second;
     }
 
     /**
@@ -139,12 +140,13 @@ class infostore
      * previous time step; this will be empty if the model has not produced
      * any data
      */
-    info_vector previous_data_from(model_instance_id_t miid)
+    info_vector previous_data_from(model_instance_id_t miid) const
     {
         read_lock lck(m_mtx);
-        if (m_previous_data.find(miid) == m_previous_data.end())
+        auto itr = m_previous_data.find(miid);
+        if (itr == m_previous_data.end())
             return info_vector();
-        else return m_previous_data[miid];
+        else return itr->second;
     }
 
     /**
@@ -165,7 +167,10 @@ class infostore
      */
     using model_info_map = std::map<model_instance_id_t, info_vector>;
 
-    mutex m_mtx;    ///< Mutex for thread-safe access to internals
+    /**
+     * \brief Mutex for thread-safe access to internals
+     */
+    mutable shared_mutex m_mtx;
 
     /**
      * \brief Collection of model output from current time step

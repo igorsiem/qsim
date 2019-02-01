@@ -13,7 +13,7 @@
 #include <qlib/qlib.h>
 #include "model.h"
 #include "qsim_concepts.h"
-#include "qsim_mutex.h"
+#include "qsim_thread.h"
 
 #ifndef _qsim_scenario_h_included
 #define _qsim_scenario_h_included
@@ -130,7 +130,7 @@ class scenario
      */
     void init(void)
     {
-        std::vector<std::future<void> > results;
+        std::vector<future<void> > results;
 
         write_lock lck(m_mutex);
         
@@ -145,6 +145,7 @@ class scenario
 
         // Wait for all the tasks to finish, and re-throw any exceptions in
         // the calling thread.
+        boost::wait_for_all(results.begin(), results.end());
         for (auto& r : results) r.get();
     }   // end init method
 
@@ -156,7 +157,7 @@ class scenario
      * Note that each model (wrapper) has its own mutex protected the
      * model instance - this mutex is for the collection object.
      */
-    mutable mutex m_mutex;
+    mutable shared_mutex m_mutex;
 
     /**
      * \brief The main models collection

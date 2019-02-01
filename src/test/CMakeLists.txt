@@ -13,4 +13,6 @@ add_executable(test-qsim ${TEST_SRC})
 target_link_libraries(test-qsim
     fmt-header-only
     test-models
-    Threads::Threads)
+    Threads::Threads
+    boost_system
+    boost_thread)

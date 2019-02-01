@@ -51,7 +51,7 @@ class monitor final
 
     private:
 
-    mutable qsim::mutex m_mtx;
+    mutable qsim::shared_mutex m_mtx;
 
     std::set<qsim::model_instance_id_t> m_initialised_entity_ids;
 

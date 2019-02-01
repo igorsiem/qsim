@@ -20,6 +20,7 @@
 #include "model_state.h"
 #include "qsim_concepts.h"
 #include "qsim_time.h"
+#include "qsim_thread.h"
 #include "qsim_pointers.h"
 #include "scenario.h"
 #include "tick.h"

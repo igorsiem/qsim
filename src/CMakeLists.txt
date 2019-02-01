@@ -26,6 +26,8 @@ endif(QSIM_USE_CONCEPTS)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+FIND_PACKAGE(Boost COMPONENTS program_options thread system REQUIRED)
+
 include_directories(
     .
     external
