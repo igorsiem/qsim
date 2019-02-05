@@ -9,6 +9,7 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
+#include "is_exchange.h"
 #include "model_id.h"
 #include "model_state.h"
 #include "qsim_concepts.h"
@@ -64,18 +65,44 @@ concept bool is_initialisable()
 }
 
 /**
- * \brief Constraints on a type so that it is usable as a Model class
+ * \brief Concept requiring a type to have a `tick` method
  *
- * \tparam T The constrainted model type
+ * \tparam T The constrained type
  */
 template <typename T>
+concept bool is_tickable()
+{
+    return requires(T t) { t.tick(); };
+}
+
+/**
+ * \brief Constraints on a type so that it is usable as a Model class
+ *
+ * Constraints for the model concept are:
+ *
+ * * Destructible
+ *
+ * * Has a static method for retrieving the model type ID
+ *
+ * * Has a method for retrieving the model instance (entity) ID
+ *
+ * * Is initialisable - has a sub-type called `init_data_t`, and an `init`
+ *   method that initialises the model object (entity) with an instance of
+ *   that sub-type
+ *
+ * * Is tickable - has a `tick` method for updating state
+ *
+ * \tparam ModelT The constrainted model type
+ */
+template <typename ModelT>
 concept bool is_model()
 {
     return
-        std::is_destructible<T>::value
-        && has_model_type_id<T>()
-        && has_model_instance_id<T>()
-        && is_initialisable<T>()
+        std::is_destructible<ModelT>::value
+        && has_model_type_id<ModelT>()
+        && has_model_instance_id<ModelT>()
+        && is_initialisable<ModelT>()
+        && is_tickable<ModelT>()
         ;
 }   // end is_model concept
 

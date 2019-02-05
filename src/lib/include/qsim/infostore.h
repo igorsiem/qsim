@@ -14,7 +14,6 @@
 #include <qlib/qlib.h>
 
 #include "id.h"
-#include "model_concepts.h"
 #include "model_id.h"
 #include "qsim_concepts.h"
 #include "qsim_thread.h"
@@ -44,7 +43,7 @@ namespace qsim {
  * Operations on Infostore objects are thread-safe.
  *
  * \tparam InfoT The type of information managed by this Infostore; this
- * should be a type that can be used as a value in `std::vector`.
+ * should be a type that can be used as an element in `std::vector`.
  */
 template <typename InfoT>
 class infostore

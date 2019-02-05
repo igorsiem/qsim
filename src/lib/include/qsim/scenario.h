@@ -61,6 +61,12 @@ concept bool is_model_factory()
  * Model Factories are passed to the `populate_from` method of the `scenario`
  * class to fill the Scenario with models. These can then be initialised
  * and run.
+ *
+ * Another task that the Model Factory must perform is to set up access for
+ * models to the InfoStore exchange...
+ *
+ * \todo Expand the Model Factory page to include documentation about access
+ * to the InfoStore exchange
  */
 
 /**

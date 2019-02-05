@@ -29,6 +29,9 @@ TEST_CASE("is_exchange", "[unit][is_exchange]")
     REQUIRE(test_info_is.current_data_from(1).size() == 0);
     REQUIRE(string_is.current_data_from(1).size() == 0);
     REQUIRE(int_is.current_data_from(1).size() == 0);
+    REQUIRE(test_info_is.previous_data_from(1).size() == 0);
+    REQUIRE(string_is.previous_data_from(1).size() == 0);
+    REQUIRE(int_is.previous_data_from(1).size() == 0);  
     
     // Add a data time to each of the IS collections.
     using test_info_is_t = test_models::test_info_is_t;
@@ -51,7 +54,10 @@ TEST_CASE("is_exchange", "[unit][is_exchange]")
     // Now, the IS objects have some current data
     REQUIRE(test_info_is.current_data_from(1).size() == 1);
     REQUIRE(string_is.current_data_from(1).size() == 1);
-    REQUIRE(int_is.current_data_from(1).size() == 1);    
+    REQUIRE(int_is.current_data_from(1).size() == 1);  
+    REQUIRE(test_info_is.previous_data_from(1).size() == 0);
+    REQUIRE(string_is.previous_data_from(1).size() == 0);
+    REQUIRE(int_is.previous_data_from(1).size() == 0);  
 
     SECTION("clear exchange sequentially")
     {
@@ -61,6 +67,9 @@ TEST_CASE("is_exchange", "[unit][is_exchange]")
         REQUIRE(test_info_is.current_data_from(1).size() == 0);
         REQUIRE(string_is.current_data_from(1).size() == 0);
         REQUIRE(int_is.current_data_from(1).size() == 0);
+        REQUIRE(test_info_is.previous_data_from(1).size() == 0);
+        REQUIRE(string_is.previous_data_from(1).size() == 0);
+        REQUIRE(int_is.previous_data_from(1).size() == 0);  
     }
 
     SECTION("clear exchange with parallelisation")
@@ -71,6 +80,31 @@ TEST_CASE("is_exchange", "[unit][is_exchange]")
         REQUIRE(test_info_is.current_data_from(1).size() == 0);
         REQUIRE(string_is.current_data_from(1).size() == 0);
         REQUIRE(int_is.current_data_from(1).size() == 0);
+        REQUIRE(test_info_is.previous_data_from(1).size() == 0);
+        REQUIRE(string_is.previous_data_from(1).size() == 0);
+        REQUIRE(int_is.previous_data_from(1).size() == 0);  
     }
+
+    SECTION("swap previous and current, then clear")   
+    {
+        qsim::thread_pool tp;
+        swap_current_previous(ise, tp);
+
+        REQUIRE(test_info_is.current_data_from(1).size() == 0);
+        REQUIRE(string_is.current_data_from(1).size() == 0);
+        REQUIRE(int_is.current_data_from(1).size() == 0);
+        REQUIRE(test_info_is.previous_data_from(1).size() == 1);
+        REQUIRE(string_is.previous_data_from(1).size() == 1);
+        REQUIRE(int_is.previous_data_from(1).size() == 1);  
+
+        clear(ise, tp);
+
+        REQUIRE(test_info_is.current_data_from(1).size() == 0);
+        REQUIRE(string_is.current_data_from(1).size() == 0);
+        REQUIRE(int_is.current_data_from(1).size() == 0);
+        REQUIRE(test_info_is.previous_data_from(1).size() == 0);
+        REQUIRE(string_is.previous_data_from(1).size() == 0);
+        REQUIRE(int_is.previous_data_from(1).size() == 0);  
+    }   // end swap-then-clear section
 
 }   // end is_exchange test

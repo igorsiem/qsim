@@ -1,5 +1,5 @@
 /**
- * \file qsim_mutex.h
+ * \file qsim_thread.h
  * Mutex / lock guard definitions for qsim
  * 
  * \author Igor Siemienowicz
@@ -12,8 +12,8 @@
 #include <shared_mutex>
 #include <qlib/qlib.h>
 
-#ifndef _qsim_qsim_mutex_h_included
-#define _qsim_qsim_mutex_h_included
+#ifndef _qsim_qsim_thread_h_included
+#define _qsim_qsim_thread_h_included
 
 namespace qsim {
 

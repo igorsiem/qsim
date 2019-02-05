@@ -11,9 +11,12 @@
  */
 
 #include <string>
+
 #include <qsim/qsim.h>
 #include <qlib/qlib.h>
+
 #include "monitor.h"
+#include "exchange.h"
 
 #ifndef _test_models_null_model_included_h
 #define _test_models_null_model_included_h
@@ -59,6 +62,8 @@ class null_model
     using init_data_t = null_init_df::data_t;
 
     void init(init_data_t i);
+
+    void tick(void);
 
     internal_state_t internal_state(void) const { return m_internal_state; }
 

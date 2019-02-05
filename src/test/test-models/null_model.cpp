@@ -21,4 +21,9 @@ void null_model::init(null_model::init_data_t i)
     m_monitor->signal_entity_initialised(m_instance_id);
 }
 
+void null_model::tick(void)
+{
+    // TODO do something with the info from the ISE
+}   // end tick method
+
 }   // end test_models namespace

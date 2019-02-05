@@ -106,7 +106,7 @@ void clear(ISExchangeT& is_exchange)
         , std::make_index_sequence<std::tuple_size<ISExchangeT>::value>());
 }   // end clear method
 
-/// \cond Execute `clear` operation over tuple of InfoStores, using a thread
+// \cond Execute `clear` operation over tuple of InfoStores, using a thread
 // pool, and the indices trick
 template <typename InfoStoreT>
 future<void> clear_is(InfoStoreT& is, thread_pool& tp)
@@ -125,7 +125,7 @@ clear(
         { clear_is(std::get<Indices>(is_exchange), tp)... };
 
 }   // end clear method
-/// \endcond
+// \endcond
 
 /**
  * \brief Execute the 'clear' operation over an ISExchange (tuple of
@@ -148,6 +148,60 @@ void clear(ISExchangeT& is_exchange, thread_pool& tp)
         is_exchange
         , tp
         , std::make_index_sequence<std::tuple_size<ISExchangeT>::value>()));
+
+    // Wait for all the tasks to complete, and then do a 'get' on each future
+    // to re-throw any exceptions.
+    boost::wait_for_all(futures.begin(), futures.end());
+    for (auto& f : futures) f.get();
+}   // end clear method
+
+// \cond Execute `swap_current_previous` operation over tuple of InfoStores,
+// using a thread pool, and the indices trick
+template <typename InfoStoreT>
+future<void> swap_current_previous_is(InfoStoreT& is, thread_pool& tp)
+{
+    return tp.enqueue([&is](void) { is.swap_current_previous(); });
+}
+
+template <typename ISExchangeT, std::size_t... Indices>
+std::array<future<void>, std::tuple_size<ISExchangeT>::value>
+swap_current_previous(
+        ISExchangeT& is_exchange
+        , thread_pool& tp
+        , std::index_sequence<Indices...>)
+{
+    return std::array<future<void>, std::tuple_size<ISExchangeT>::value>
+        { swap_current_previous_is(std::get<Indices>(is_exchange), tp)... };
+
+}   // end swap_current_previous method
+// \endcond
+
+/**
+ * \brief Execute the `swap_current_previous` operation over an ISExchange
+ * (tuple of InfoStores)
+ *
+ * This method uses the given thread pool to execute the operation in
+ * parallel, and blocks until they are all complete.
+ *
+ * \tparam ISExchangeT The IS Exchange - a tuple of InfoStores
+ *
+ * \param is_exchange The IS Exchange object
+ *
+ * \param tp The thread pool to use
+ */
+template <typename ISExchangeT>
+void swap_current_previous(ISExchangeT& is_exchange, thread_pool& tp)
+{
+    // Execute the swap_current_previous operation over the tuple, using the
+    // thread pool, and receiving an array of futures for the individual
+    // operations in return.
+    auto futures =
+        std::move(
+            swap_current_previous(
+                is_exchange
+                , tp
+                , std::make_index_sequence<
+                    std::tuple_size<ISExchangeT>::value>()));
 
     // Wait for all the tasks to complete, and then do a 'get' on each future
     // to re-throw any exceptions.
