@@ -10,6 +10,7 @@
  */
 
 #include "infostore.h"
+#include "qsim_pointers.h"
 #include "qsim_thread.h"
 
 #ifndef _qsim_is_exchange_h_included
@@ -95,8 +96,6 @@ std::array<int, std::tuple_size<ISExchangeT>::value> clear(
  * \tparam ISExchangeT An `is_exchange` type (tuple of InfoStores)
  *
  * \param is_exchange The IS exchange object
- *
- * \todo Implement paralellised version of this method
  */
 template <typename ISExchangeT>
 void clear(ISExchangeT& is_exchange)
@@ -207,7 +206,92 @@ void swap_current_previous(ISExchangeT& is_exchange, thread_pool& tp)
     // to re-throw any exceptions.
     boost::wait_for_all(futures.begin(), futures.end());
     for (auto& f : futures) f.get();
-}   // end clear method
+}   // end swap_current_previous method
+
+/**
+ * \brief A type-erasure wrapper for accessing generic functions of an
+ * InfoStore Exchange
+ *
+ * InfoStore Exchanges are tuples of specific InfoStore types. This class
+ * is provided so that generic Exchange operations can be accessed via a
+ * single type interface, and reduce template-based complexity. The
+ * \ref model_factory is responsible for actually creating the Exchange
+ * object and its wrapper.
+ */ 
+class is_exchange_wrapper
+{
+
+    // \cond
+    struct te_base
+    {
+        virtual void swap_current_previous(thread_pool& tp) = 0;
+        virtual void clear(thread_pool& tp) = 0;
+    };  // end te_base structure
+
+    template <typename ISExchangeT>
+    struct te_impl : public te_base
+    {
+
+        virtual void swap_current_previous(thread_pool& tp) override
+            { qsim::swap_current_previous(*exchange, tp); }
+
+        virtual void clear(thread_pool& tp) override
+            { qsim::clear(*exchange, tp); }
+
+        std::shared_ptr<ISExchangeT> exchange;
+
+        explicit te_impl(std::shared_ptr<ISExchangeT> e) : exchange(e) {}
+
+    };  // end te_impl structure
+
+    // \endcond
+
+    public:
+
+    /**
+     * \brief Constructor, initialising the exchange object
+     *
+     * \tparam ISExchangeT The InfoStore Exchange type - a tuple of the
+     * individual InfoStores
+     *
+     * \param e A shared pointer to the Exchange object
+     */
+    template <typename ISExchangeT>
+    explicit is_exchange_wrapper(std::shared_ptr<ISExchangeT> e) :
+        m_exchange(std::make_shared<te_impl<ISExchangeT> >(e))
+    {}
+
+    /**
+     * \brief Clear the previous data collection, then swap the current and
+     * previous collections for every InfoStore in the Exchange
+     *
+     * This method is typically called at the end of every time step.
+     *
+     * \param tp The thread pool for executing the operation in parallel
+     */
+    void swap_current_previous(thread_pool& tp)
+        { m_exchange->swap_current_previous(tp); }
+
+    /**
+     * \brief Clear all the data in each InfoStore in the Exchange
+     *
+     * This method is typically called at the beginning of a scenario run.
+     *
+     * \param tp The thread pool for executing the operation in parallel
+     */
+    void clear(thread_pool& tp) { m_exchange->clear(tp); }
+
+    protected:
+
+    /**
+     * \brief A shared pointer to an instance of the type-erasure base
+     * through which the generic operations of the Exchange are accessed
+     */
+    std::shared_ptr<te_base> m_exchange;
+
+};  // end is_exchange_wrapper class
+
+QSIM_DECLARE_POINTERS_FOR(is_exchange_wrapper)
 
 }   // end qsim namespace
 

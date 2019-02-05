@@ -65,12 +65,13 @@ TEST_CASE("model and wrapper life-cycle", "[unit][model]")
     using null_model = test_models::null_model;
     using null_init_df = test_models::null_init_df;
 
+    auto exchange = std::make_shared<test_models::is_exchange_t>();
     auto mntr = std::make_shared<test_models::monitor>();
 
     // Instantiate a Model Wrapper, with its Model and Initialisation Data
     // Factory. Can access its data, but it is uninitialised.
     qsim::model_wrapper null_mw(
-        std::make_unique<null_model>(mntr)
+        std::make_unique<null_model>(exchange, mntr)
         , std::make_unique<null_init_df>(1, "hello"));
 
     REQUIRE(null_mw.model_type_id() == 1);

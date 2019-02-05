@@ -17,8 +17,8 @@
 
 #include "data_factory.h"
 #include "model_concepts.h"
-#include "qsim_thread.h"
 #include "qsim_pointers.h"
+#include "qsim_thread.h"
 
 #ifndef _qsim_model_h_included
 #define _qsim_model_h_included

@@ -46,9 +46,12 @@ class null_model
 
     public:
 
-    explicit null_model(std::shared_ptr<monitor> mtr) :
+    null_model(
+            is_exchange_spr exchange
+            , std::shared_ptr<monitor> mtr) :
         m_instance_id(0)
         , m_internal_state()
+        , m_exchange(exchange)
         , m_monitor(mtr)
     {}
 
@@ -72,6 +75,8 @@ class null_model
     qsim::model_instance_id_t m_instance_id;
 
     internal_state_t m_internal_state;
+
+    is_exchange_spr m_exchange;
 
     std::shared_ptr<monitor> m_monitor;
 

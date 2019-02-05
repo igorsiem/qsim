@@ -92,6 +92,10 @@ concept bool is_tickable()
  *
  * * Is tickable - has a `tick` method for updating state
  *
+ * Note that the constructor of a model type should take a shared pointer to
+ * the tuple of InfoStore types used in the simulation, to perform its input
+ * and output, but this process is mediated by the \ref model_factory type.
+ *
  * \tparam ModelT The constrainted model type
  */
 template <typename ModelT>

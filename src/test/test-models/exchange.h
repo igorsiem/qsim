@@ -26,6 +26,8 @@ using int_is_t = qsim::infostore<int>;
 
 using is_exchange_t = qsim::is_exchange<test_info, std::string, int>;
 
+using is_exchange_spr = std::shared_ptr<is_exchange_t>;
+
 }   // end test_models namespace
 
 #endif
