@@ -25,10 +25,10 @@ using namespace fmt::literals;
 namespace test_models {
 
 // Model factory - generates a scenario with some null models
-struct model_factory
+struct null_model_factory
 {
     
-    explicit model_factory(int nm) :
+    explicit null_model_factory(int nm) :
         m_number_of_models(nm)
         , mntr(std::make_shared<monitor>()) {}
 
@@ -57,7 +57,7 @@ struct model_factory
 
     std::shared_ptr<monitor> mntr;
 
-};  // end model factory class
+};  // end null_model_factory class
 
 }   // end test_models namespace
 

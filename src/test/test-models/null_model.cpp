@@ -21,8 +21,10 @@ void null_model::init(null_model::init_data_t i)
     m_monitor->signal_entity_initialised(m_instance_id);
 }
 
-void null_model::tick(void)
+void null_model::tick(qsim::tick_count_t)
 {
+    m_monitor->signal_entity_ticked(m_instance_id);
+
     // TODO do something with the info from the ISE
 }   // end tick method
 

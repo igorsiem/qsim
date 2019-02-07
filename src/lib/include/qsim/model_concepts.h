@@ -13,6 +13,7 @@
 #include "model_id.h"
 #include "model_state.h"
 #include "qsim_concepts.h"
+#include "tick.h"
 
 #ifndef _qsim_model_concepts_h_included
 #define _qsim_model_concepts_h_included
@@ -65,14 +66,15 @@ concept bool is_initialisable()
 }
 
 /**
- * \brief Concept requiring a type to have a `tick` method
+ * \brief Concept requiring a type to have a `tick` method, that takes the
+ * time step (tick) number as its argument (starts at zero)
  *
  * \tparam T The constrained type
  */
 template <typename T>
 concept bool is_tickable()
 {
-    return requires(T t) { t.tick(); };
+    return requires(T t, tick_count_t c) { t.tick(c); };
 }
 
 /**
@@ -90,7 +92,8 @@ concept bool is_tickable()
  *   method that initialises the model object (entity) with an instance of
  *   that sub-type
  *
- * * Is tickable - has a `tick` method for updating state
+ * * Is tickable - has a `tick` method for updating state that takes a
+ *   "tick count" argument, and performs all input, update and output
  *
  * Note that the constructor of a model type should take a shared pointer to
  * the tuple of InfoStore types used in the simulation, to perform its input

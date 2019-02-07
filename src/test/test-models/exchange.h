@@ -11,7 +11,9 @@
 
 #include <string>
 #include <qsim/qsim.h>
+
 #include "test_info.h"
+#include "tick_time.h"
 
 #ifndef _test_models_exchange_h_included
 #define _test_models_exchange_h_included
@@ -24,7 +26,9 @@ using string_is_t = qsim::infostore<std::string>;
 
 using int_is_t = qsim::infostore<int>;
 
-using is_exchange_t = qsim::is_exchange<test_info, std::string, int>;
+using is_exchange_t = qsim::is_exchange<
+                        tick_time
+                        , test_info>;
 
 using is_exchange_spr = std::shared_ptr<is_exchange_t>;
 

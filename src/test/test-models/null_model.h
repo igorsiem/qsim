@@ -28,7 +28,7 @@ struct null_init_df
 
     struct data_t
     {
-        qsim::model_instance_id_t id = 1;
+        qsim::model_instance_id_t id;
         std::string internal_state;
     };
 
@@ -48,14 +48,14 @@ class null_model
 
     null_model(
             is_exchange_spr exchange
-            , std::shared_ptr<monitor> mtr) :
+            , monitor_spr mtr) :
         m_instance_id(0)
         , m_internal_state()
         , m_exchange(exchange)
         , m_monitor(mtr)
     {}
 
-    static qsim::model_type_id_t model_type_id(void) { return 1; }
+    static qsim::model_type_id_t model_type_id(void) { return 2; }
     
     qsim::model_instance_id_t model_instance_id(void) const
         { return m_instance_id; }
@@ -66,7 +66,7 @@ class null_model
 
     void init(init_data_t i);
 
-    void tick(void);
+    void tick(qsim::tick_count_t);
 
     internal_state_t internal_state(void) const { return m_internal_state; }
 
@@ -78,7 +78,7 @@ class null_model
 
     is_exchange_spr m_exchange;
 
-    std::shared_ptr<monitor> m_monitor;
+    monitor_spr m_monitor;
 
 };  // end null_model class
 

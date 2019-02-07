@@ -74,18 +74,30 @@ TEST_CASE("model and wrapper life-cycle", "[unit][model]")
         std::make_unique<null_model>(exchange, mntr)
         , std::make_unique<null_init_df>(1, "hello"));
 
-    REQUIRE(null_mw.model_type_id() == 1);
+    REQUIRE(null_mw.model_type_id() == 2);
     REQUIRE(null_mw.model_state() == qsim::model_state_t::uninitialised);
+
+    // Monitor reports no initialised or ticked entities
     REQUIRE(mntr->initialised_entity_count() == 0);
     REQUIRE(mntr->entity_is_initialised(1) == false);
+    REQUIRE(mntr->ticked_entity_count() == 0);
+    REQUIRE(mntr->entity_tick_count(1) == 0);
 
-    // Initialise the model - now it is in the ready state
+    // Initialise the model - now it is in the ready state, but has not been
+    // ticked.
     null_mw.init();
     REQUIRE(null_mw.model_state() == qsim::model_state_t::ready);    
     REQUIRE(null_mw.model_instance_id() == 1);
     REQUIRE(mntr->initialised_entity_count() == 1);
     REQUIRE(mntr->entity_is_initialised(1) == true);
+    REQUIRE(mntr->ticked_entity_count() == 0);
+    REQUIRE(mntr->entity_tick_count(1) == 0);
 
-    // TODO destruction
+    // Tick the model once. The monitor reports that the model has been
+    // ticked.
+    null_mw.tick(0);
+
+    REQUIRE(mntr->ticked_entity_count() == 1);
+    REQUIRE(mntr->entity_tick_count(1) == 1);
 
 }   // end null_model_instantiation

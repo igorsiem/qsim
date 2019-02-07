@@ -19,7 +19,7 @@ TEST_CASE("scenario creation", "[unit][scenario]")
     auto thread_pool = std::make_shared<qlib::thread_pool>();
 
     // Model factory creates 10 models
-    test_models::model_factory mf{10};
+    test_models::null_model_factory mf{10};
 
     // Scenario created and populated using model factory
     qsim::scenario scenario(thread_pool);

@@ -43,10 +43,33 @@ class monitor final
             m_initialised_entity_ids.end());
     }
 
+    void signal_entity_ticked(qsim::model_instance_id_t eid)
+    {
+        qsim::write_lock lck(m_mtx);
+        auto itr = m_entity_tick_count.find(eid);
+        if (itr == m_entity_tick_count.end()) m_entity_tick_count[eid] = 1;
+        else itr->second++;
+    }
+
+    std::size_t ticked_entity_count(void) const
+    {
+        qsim::read_lock lck(m_mtx);
+        return m_entity_tick_count.size();
+    }
+
+    int entity_tick_count(qsim::model_instance_id_t eid)
+    {
+        qsim::read_lock lck(m_mtx);
+        auto itr = m_entity_tick_count.find(eid);
+        if (itr == m_entity_tick_count.end()) return 0;
+        else return itr->second;
+    }
+
     void clear(void)
     {
         qsim::write_lock lck(m_mtx);
         m_initialised_entity_ids.clear();
+        m_entity_tick_count.clear();
     }
 
     private:
@@ -55,7 +78,11 @@ class monitor final
 
     std::set<qsim::model_instance_id_t> m_initialised_entity_ids;
 
+    std::map<qsim::model_instance_id_t, int>  m_entity_tick_count;
+
 };  // end monitor struct
+
+using monitor_spr = std::shared_ptr<monitor>;
 
 }   // end test_models method
 

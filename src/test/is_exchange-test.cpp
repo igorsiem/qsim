@@ -16,8 +16,12 @@
 // Simple tests for an InfoStore exchange
 TEST_CASE("is_exchange", "[unit][is_exchange]")
 {
-    // Create an IS exchange from the test models library
-    using is_exchange_t = test_models::is_exchange_t;
+    // Create an IS exchange from the test_info type from the test models
+    // library, as well as ordinary string and int types.
+    using is_exchange_t = qsim::is_exchange<
+                            test_models::test_info
+                            , std::string
+                            , int>;
     is_exchange_t ise;
 
     // Get references to our InfoStore objects from the Exchange. Each of

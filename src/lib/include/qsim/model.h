@@ -63,6 +63,13 @@ class model_wrapper
          */
         virtual model_instance_id_t model_instance_id(void) const = 0;
 
+        /**
+         * \brief Tick the underlying model
+         *
+         * \param tc The zero-based index of the tick (time step)
+         */
+        virtual void tick(tick_count_t tc) = 0;
+
     };  // end mw_te_base struct
 
     /**
@@ -167,6 +174,14 @@ class model_wrapper
          */
         virtual void init(void) override
             { m_model->init(std::move(m_init_df->get())); }
+
+        /**
+         * \brief Tick the underlying model
+         *
+         * \param tc The zero-based index of the tick (time step)
+         */
+        virtual void tick(tick_count_t tc) override
+            { m_model->tick(tc); }
     
     };  // end mw_te_impl struct
 
@@ -247,7 +262,18 @@ class model_wrapper
 
         m_wrapped_model->init();
         m_model_state = model_state_t::ready;
-    }
+    }   // end init method
+
+    /**
+     * \brief Tick the underlying model
+     *
+     * \param tc The zero-based index of the tick (time step)
+     */
+    void tick(tick_count_t tc)
+    {
+        write_lock lck(m_mutex);
+        m_wrapped_model->tick(tc);        
+    }   // end tick method
 
     protected:
 
