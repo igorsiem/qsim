@@ -69,12 +69,18 @@ class time_model
     // Tick - increment time and output
     void tick(qsim::tick_count_t tc)
     {
+
+        double t = tc * 1.0;
+            // TODO support increment other than 1 second
+
         // Get out the time infostore, and add our output to it
         auto& time_is = qsim::get_infostore<tick_time>(*m_exchange);
         time_is.add(
             m_instance_id
-            , std::vector<tick_time>{ tick_time{ tc, tc * 1.0 } });
-            // TODO support increment other than 1 second
+            , std::vector<tick_time>{ tick_time{ tc, t } });
+
+        m_monitor->signal_entity_ticked(m_instance_id);
+        m_monitor->set_latest_time_sec(t);
     }   // end tick methid
 
     protected:

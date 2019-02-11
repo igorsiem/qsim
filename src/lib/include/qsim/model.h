@@ -9,6 +9,7 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
+#include <map>
 #include <optional>
 #include <string>
 #include <type_traits>
@@ -298,9 +299,51 @@ class model_wrapper
 QSIM_DECLARE_UNIQUE_POINTERS_FOR(model_wrapper)
 
 /**
- * \brief A vector of model wrappers
+ * \page tick_group Tick Group
+ *
+ * Model Instances (Entities) in a Scenario are segmented into Tick Groups.
+ * A single tick group contains model instances that may be ticked in
+ * parallel (i.e. have no direct dependence on each other's data).
+ *
+ * The Tick Group index is a simple signed integer. Tick Groups are ticked
+ * in strict order, so that ticking for all the Entities in Group *n* is
+ * complete before ticking for Entities in Group *n+1* commences.
+ *
+ * The \ref model_factory for a Scenario is responsible for assigning Models
+ * to Tick Groups. If Model 'B' relies on the output of model 'A', then 'B'
+ * should be assigned a higher Tick Group index. Then 'A' will have placed
+ * its output in the InfoStore Exchange that may then be accessed by 'B'.
+ *
+ * Tick Groups may be assigned to individual Model Instances, but they are
+ * most often assigned to Model Types. For example, a radar sensor model
+ * would generally need to know the positions of all platform models, so
+ * the entire class of sensor models would generally be assigned to a Tick
+ * Group with a higher index than that containing the platform models.
+ *
+ * Circular depencies may be broken by having one Entity or one class of
+ * Entities in the circular dependency access the output they require from
+ * the *previous* time step, rather than the current time step. This is the
+ * reason that InfoStore objects retain this data.
+ *
+ * See the \ref infostore page for more information.
  */
-using model_vector= std::vector<model_wrapper_upr>;
+
+/**
+ * \brief An index for the \ref tick_group of a model
+ */
+using tick_group_index_t = int;
+
+/**
+ * \brief A collection of models that may be ticked in parallel
+ */
+using tick_group = std::vector<model_wrapper_upr>;
+
+/**
+ * \brief A map of tick groups (vectors of models), indexed by tick group
+ * index
+ */
+using models_by_tick_group_index_map =
+    std::map<tick_group_index_t, tick_group>;
 
 }   // end qsim namespace
 

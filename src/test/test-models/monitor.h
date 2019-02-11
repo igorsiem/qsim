@@ -65,11 +65,19 @@ class monitor final
         else return itr->second;
     }
 
+    double latest_time_sec(void) const { return m_latest_time_sec.load(); }
+
+    void set_latest_time_sec(double t) { m_latest_time_sec = t; }
+
     void clear(void)
     {
         qsim::write_lock lck(m_mtx);
         m_initialised_entity_ids.clear();
         m_entity_tick_count.clear();
+        
+        lck.unlock();
+
+        m_latest_time_sec = -1.0;
     }
 
     private:
@@ -79,6 +87,8 @@ class monitor final
     std::set<qsim::model_instance_id_t> m_initialised_entity_ids;
 
     std::map<qsim::model_instance_id_t, int>  m_entity_tick_count;
+
+    std::atomic<double> m_latest_time_sec = -1.0;
 
 };  // end monitor struct
 

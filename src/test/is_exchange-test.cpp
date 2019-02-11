@@ -16,6 +16,10 @@
 // Simple tests for an InfoStore exchange
 TEST_CASE("is_exchange", "[unit][is_exchange]")
 {
+    using string_is_t = qsim::infostore<std::string>;
+    using int_is_t = qsim::infostore<int>;
+    using test_info_is_t = test_models::test_info_is_t;
+
     // Create an IS exchange from the test_info type from the test models
     // library, as well as ordinary string and int types.
     using is_exchange_t = qsim::is_exchange<
@@ -38,10 +42,6 @@ TEST_CASE("is_exchange", "[unit][is_exchange]")
     REQUIRE(int_is.previous_data_from(1).size() == 0);  
     
     // Add a data time to each of the IS collections.
-    using test_info_is_t = test_models::test_info_is_t;
-    using string_is_t = test_models::string_is_t;
-    using int_is_t = test_models::int_is_t;
-
     test_info_is.add(
         1
         , test_info_is_t::info_vector{

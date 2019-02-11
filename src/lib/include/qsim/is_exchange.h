@@ -293,6 +293,18 @@ class is_exchange_wrapper
 
 QSIM_DECLARE_POINTERS_FOR(is_exchange_wrapper)
 
+/**
+ * \page infostore_exchange InfoStores and the InfoStore Exchange
+ *
+ * InfoStores (the `qsim::infostore` template class) are in-memory storage
+ * objects by which models may exchange information.
+ *
+ * This is a placeholder for documentation on the `infostore` and
+ * `is_exchange` types.
+ *
+ * \todo Expand mid-level docs on InfoStores and the InfoStore Exchange.
+ */
+
 }   // end qsim namespace
 
 #endif

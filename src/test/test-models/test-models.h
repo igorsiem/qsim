@@ -10,7 +10,7 @@
  */
 
 #include "exchange.h"
-#include "model_factory.h"
+#include "model_factories.h"
 #include "monitor.h"
 #include "null_model.h"
 #include "string_factory.h"

@@ -22,10 +22,6 @@ namespace test_models {
 
 using test_info_is_t = qsim::infostore<test_info>;
 
-using string_is_t = qsim::infostore<std::string>;
-
-using int_is_t = qsim::infostore<int>;
-
 using is_exchange_t = qsim::is_exchange<
                         tick_time
                         , test_info>;
