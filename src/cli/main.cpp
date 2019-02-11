@@ -12,6 +12,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#include <qsim/qsim.h>
+
 /**
  * \brief Entry point for the qSim CLI executable
  * 
@@ -71,6 +73,7 @@ int main(int argc, char* argv[])
                 "SOFTWARE OR THE USE OR OTHER"
             << std::endl << "DEALINGS IN THE SOFTWARE."
             << std::endl;
+
     }
     catch (const std::exception& error)
     {

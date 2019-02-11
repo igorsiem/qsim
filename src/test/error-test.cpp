@@ -1,5 +1,5 @@
 /**
- * \file test-error.cpp
+ * \file error-test.cpp
  * Test for the qSim error class
  * 
  * \author Igor Siemienowicz
@@ -10,13 +10,14 @@
  */
 
 #include <catch/catch.hpp>
-#include "../lib/qsim.h"
+#include <qsim/qsim.h>
 
 // Verify the operation of the error class declaration macros
 DECLARE_ERROR_CLASS(test_error1, std::runtime_error)
 DECLARE_MESSAGE_ERROR_CLASS(test_error2, std::exception, "second error")
 
-TEST_CASE("error", "[unit]")
+// Basic verification of error signalling and handling
+TEST_CASE("error", "[unit][error]")
 {
 
     try

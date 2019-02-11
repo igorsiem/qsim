@@ -7,3 +7,5 @@
 
 file (GLOB CLI_SRC *.cpp)
 add_executable(qsim-cli ${CLI_SRC})
+
+target_link_libraries(qsim-cli boost_system)

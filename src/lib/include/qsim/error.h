@@ -11,8 +11,8 @@
 
 #include <qlib/qlib.h>
 
-#ifndef _qsim_error_h_defined
-#define _qsim_error_h_defined
+#ifndef _qsim_error_h_included
+#define _qsim_error_h_included
 
 /**
  * \brief Declare a class for signalling an error condition with a

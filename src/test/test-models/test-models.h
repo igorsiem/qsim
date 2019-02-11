@@ -1,6 +1,6 @@
 /**
- * \file qsim.h
- * Single-point include file for all of the qsim library
+ * \file test-models.h
+ * Single include for the `test-models` library
  * 
  * \author Igor Siemienowicz
  * 
@@ -9,4 +9,10 @@
  * or copy at https://www.boost.org/LICENSE_1_0.txt
  */
 
-#include "error.h"
+#include "exchange.h"
+#include "model_factories.h"
+#include "monitor.h"
+#include "null_model.h"
+#include "string_factory.h"
+#include "test_info.h"
+#include "time_model.h"
